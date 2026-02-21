@@ -14,7 +14,9 @@ builder.Services.AddOpenApi(options =>
     options.AddDocumentTransformer((document, context, cancellationToken) =>
     {
         document.Components ??= new();
-        document.Components.SecuritySchemes!["Bearer"] =
+        document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
+
+        document.Components.SecuritySchemes["Bearer"] =
             new OpenApiSecurityScheme
             {
                 Type = SecuritySchemeType.Http,
