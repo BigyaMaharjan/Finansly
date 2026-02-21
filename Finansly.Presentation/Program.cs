@@ -3,40 +3,16 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi(options =>
-{
-    options.AddDocumentTransformer((document, context, cancellationToken) =>
-    {
-        document.Components ??= new();
-        document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
+builder.Services.AddOpenApi();
 
-        document.Components.SecuritySchemes["Bearer"] =
-            new OpenApiSecurityScheme
-            {
-                Type = SecuritySchemeType.Http,
-                Scheme = "bearer",
-                BearerFormat = "JWT",
-                In = ParameterLocation.Header,
-                Name = "Authorization"
-            };
-
-        return Task.CompletedTask;
-    });
-
-    options.AddOperationTransformer((operation, context, cancellationToken) =>
-    {
-        operation.Security ??= new List<OpenApiSecurityRequirement>();
-        var bearerSchemeRef = new OpenApiSecuritySchemeReference("Bearer");
-        operation.Security.Add(new OpenApiSecurityRequirement { [bearerSchemeRef] = [] });
-        return Task.CompletedTask;
-    });
-});
+builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<LedgerlyDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -71,6 +47,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
