@@ -1,5 +1,5 @@
 ﻿using static BCrypt.Net.BCrypt; // Note the 'static' keyword and the double BCrypt
-using Finansly.Application.Common;
+using Finansly.Application.Common.Interfaces;
 
 namespace Finansly.Infrastructure.Security;
 
