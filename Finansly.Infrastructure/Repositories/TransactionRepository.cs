@@ -10,7 +10,7 @@ public class TransactionRepository : BaseRepository<Transaction>, ITransactionRe
 {
     public TransactionRepository(FinanslyDbContext context) : base(context) { }
 
-    public async Task<IEnumerable<Transaction>> GetByUserAsync(int userId)
+    public async Task<IEnumerable<Transaction>> GetByUserAsync(Guid userId)
     {
         return await _dbSet
             .Include(t => t.Category)
@@ -19,7 +19,7 @@ public class TransactionRepository : BaseRepository<Transaction>, ITransactionRe
             .ToListAsync();
     }
 
-    public async Task<decimal> GetTotalByTypeAsync(int userId, CategoryType type, int month, int year)
+    public async Task<decimal> GetTotalByTypeAsync(Guid userId, CategoryType type, int month, int year)
     {
         return await _dbSet
             .Include(t => t.Category)
@@ -30,7 +30,7 @@ public class TransactionRepository : BaseRepository<Transaction>, ITransactionRe
             .SumAsync(t => t.Amount);
     }
 
-    public override async Task<Transaction?> GetByIdAsync(int id)
+    public override async Task<Transaction?> GetByIdAsync(Guid id)
     {
         return await _dbSet
             .Include(t => t.Category)

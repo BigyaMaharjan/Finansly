@@ -15,6 +15,7 @@ public static class DbInitializer
 
         var user = new User
         {
+            Id = Guid.NewGuid(),
             Name = "Super Admin",
             Email = "superUser@ledgerly.com",
             PasswordHash = hasher.Hash("1q2w3E*")

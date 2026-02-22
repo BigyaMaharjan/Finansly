@@ -6,7 +6,7 @@ public class Category : BaseEntity
 {
     public string Name { get; set; } = null!;
     public CategoryType Type { get; set; }
-    public int UserId { get; set; }
+    public Guid UserId { get; set; }
 
     // Navigation properties
     public User User { get; set; } = null!;

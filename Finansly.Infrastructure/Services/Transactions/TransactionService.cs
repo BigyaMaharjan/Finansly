@@ -15,13 +15,13 @@ public class TransactionService : ITransactionService
         _repository = repository;
     }
 
-    public async Task<IEnumerable<TransactionDto>> GetAllByUserAsync(int userId)
+    public async Task<IEnumerable<TransactionDto>> GetAllByUserAsync(Guid userId)
     {
         var transactions = await _repository.GetByUserAsync(userId);
         return transactions.Select(MapToDto);
     }
 
-    public async Task<TransactionDto?> GetByIdAsync(int id)
+    public async Task<TransactionDto?> GetByIdAsync(Guid id)
     {
         var transaction = await _repository.GetByIdAsync(id);
         return transaction is null ? null : MapToDto(transaction);
@@ -44,7 +44,7 @@ public class TransactionService : ITransactionService
         return MapToDto(transaction);
     }
 
-    public async Task UpdateAsync(int id, UpdateTransactionDto dto)
+    public async Task UpdateAsync(Guid id, UpdateTransactionDto dto)
     {
         var transaction = await _repository.GetByIdAsync(id);
         if (transaction is null)
@@ -59,7 +59,7 @@ public class TransactionService : ITransactionService
         await _repository.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(Guid id)
     {
         var transaction = await _repository.GetByIdAsync(id);
         if (transaction is null)
@@ -69,7 +69,7 @@ public class TransactionService : ITransactionService
         await _repository.SaveChangesAsync();
     }
 
-    public async Task<decimal> GetTotalByTypeAsync(int userId, CategoryType type, int month, int year)
+    public async Task<decimal> GetTotalByTypeAsync(Guid userId, CategoryType type, int month, int year)
     {
         return await _repository.GetTotalByTypeAsync(userId, type, month, year);
     }

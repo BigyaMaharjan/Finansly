@@ -4,10 +4,10 @@ namespace Finansly.Application.Services.Transactions;
 
 public interface ITransactionService
 {
-    Task<IEnumerable<TransactionDto>> GetAllByUserAsync(int userId);
-    Task<TransactionDto?> GetByIdAsync(int id);
+    Task<IEnumerable<TransactionDto>> GetAllByUserAsync(Guid userId);
+    Task<TransactionDto?> GetByIdAsync(Guid id);
     Task<TransactionDto> CreateAsync(CreateTransactionDto dto);
-    Task UpdateAsync(int id, UpdateTransactionDto dto);
-    Task DeleteAsync(int id);
-    Task<decimal> GetTotalByTypeAsync(int userId, Domain.Enums.CategoryType type, int month, int year);
+    Task UpdateAsync(Guid id, UpdateTransactionDto dto);
+    Task DeleteAsync(Guid id);
+    Task<decimal> GetTotalByTypeAsync(Guid userId, Domain.Enums.CategoryType type, int month, int year);
 }
