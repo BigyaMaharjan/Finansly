@@ -18,6 +18,7 @@ public static class DbInitializer
             Id = Guid.NewGuid(),
             Name = "Super Admin",
             Email = "superUser@ledgerly.com",
+            DateOfBirth = DateTime.UtcNow,
             PasswordHash = hasher.Hash("1q2w3E*")
         };
 
