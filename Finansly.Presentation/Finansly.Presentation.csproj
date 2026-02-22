@@ -20,4 +20,8 @@
     <ProjectReference Include="..\Finansly.Infrastructure\Finansly.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+  </ItemGroup>
+
 </Project>
