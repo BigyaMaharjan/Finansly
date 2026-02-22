@@ -8,7 +8,7 @@ public static class DbInitializer
 {
     public static async Task SeedAsync(FinanslyDbContext context)
     {
-        if (await context.Users.AnyAsync())
+        if (await context.Users.AnyAsync(u => u.Email == "superUser@ledgerly.com"))
             return; // Already seeded
 
         var hasher = new PasswordHasher();
