@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Finansly.Infrastructure.Persistence;
 
-public class LedgerlyDbContext : DbContext
+public class FinanslyDbContext : DbContext
 {
-    public LedgerlyDbContext(DbContextOptions<LedgerlyDbContext> options) : base(options)
+    public FinanslyDbContext(DbContextOptions<FinanslyDbContext> options) : base(options)
     {
     }
     public DbSet<User> Users => Set<User>();
