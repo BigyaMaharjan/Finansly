@@ -1,4 +1,4 @@
-﻿namespace Finansly.Domain.Entities;
+﻿namespace Finansly.Domain.Enums;
 
 public enum CategoryType
 {

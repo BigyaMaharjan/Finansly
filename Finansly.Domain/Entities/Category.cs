@@ -1,4 +1,6 @@
-﻿namespace Finansly.Domain.Entities;
+﻿using Finansly.Domain.Enums;
+
+namespace Finansly.Domain.Entities;
 
 public class Category : BaseEntity
 {
