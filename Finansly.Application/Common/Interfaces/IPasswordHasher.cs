@@ -1,4 +1,4 @@
-﻿namespace Finansly.Application.Common;
+﻿namespace Finansly.Application.Common.Interfaces;
 
 public interface IPasswordHasher
 {
