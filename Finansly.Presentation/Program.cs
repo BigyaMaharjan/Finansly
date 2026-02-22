@@ -15,7 +15,11 @@ builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<FinanslyDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+
+        x => x.MigrationsAssembly(typeof(FinanslyDbContext).Assembly.FullName)
+        ));
 
 
 builder.Services.AddAuthentication(options =>
