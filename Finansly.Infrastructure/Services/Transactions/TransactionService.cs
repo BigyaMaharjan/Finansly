@@ -2,7 +2,6 @@ using Finansly.Application.DTOs.Transactions;
 using Finansly.Application.Interfaces.Transactions;
 using Finansly.Application.Services.Transactions;
 using Finansly.Domain.Entities;
-using Finansly.Domain.Enums;
 
 namespace Finansly.Infrastructure.Services.Transactions;
 
@@ -69,9 +68,9 @@ public class TransactionService : ITransactionService
         await _repository.SaveChangesAsync();
     }
 
-    public async Task<decimal> GetTotalByTypeAsync(Guid userId, CategoryType type, int month, int year)
+    public async Task<decimal> GetTotalByTypeAsync(GetTotalByTypeRequestDto request)
     {
-        return await _repository.GetTotalByTypeAsync(userId, type, month, year);
+        return await _repository.GetTotalByTypeAsync(request);
     }
 
     private static TransactionDto MapToDto(Transaction t) => new()

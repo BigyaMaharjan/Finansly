@@ -1,6 +1,6 @@
+using Finansly.Application.DTOs.Transactions;
 using Finansly.Application.Interfaces.Transactions;
 using Finansly.Domain.Entities;
-using Finansly.Domain.Enums;
 using Finansly.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,14 +19,14 @@ public class TransactionRepository : BaseRepository<Transaction>, ITransactionRe
             .ToListAsync();
     }
 
-    public async Task<decimal> GetTotalByTypeAsync(Guid userId, CategoryType type, int month, int year)
+    public async Task<decimal> GetTotalByTypeAsync(GetTotalByTypeRequestDto request)
     {
         return await _dbSet
             .Include(t => t.Category)
-            .Where(t => t.UserId == userId 
-                && t.Category.Type == type 
-                && t.Date.Month == month 
-                && t.Date.Year == year)
+            .Where(t => t.UserId == request.UserId 
+                && t.Category.Type == request.Type 
+                && t.Date.Month == request.Month 
+                && t.Date.Year == request.Year)
             .SumAsync(t => t.Amount);
     }
 

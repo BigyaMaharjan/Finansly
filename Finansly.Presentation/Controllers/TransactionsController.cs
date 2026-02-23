@@ -92,18 +92,15 @@ public class TransactionsController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<decimal>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<decimal>), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse<decimal>>> GetSummary(
-        Guid userId,
-        [FromQuery] CategoryType type,
-        [FromQuery] int month,
-        [FromQuery] int year)
+        [FromQuery] GetTotalByTypeRequestDto request)
     {
-        if (month < 1 || month > 12)
+        if (request.Month < 1 || request.Month > 12)
             return BadRequest(ApiResponse<decimal>.Fail(400, "Month must be between 1 and 12."));
 
-        if (year < 2000 || year > DateTime.UtcNow.Year + 1)
+        if (request.Year < 2000 || request.Year > DateTime.UtcNow.Year + 1)
             return BadRequest(ApiResponse<decimal>.Fail(400, "Year is out of a valid range."));
 
-        var total = await _transactionService.GetTotalByTypeAsync(userId, type, month, year);
+        var total = await _transactionService.GetTotalByTypeAsync(request);
         return Ok(ApiResponse<decimal>.Ok(total));
     }
 }
