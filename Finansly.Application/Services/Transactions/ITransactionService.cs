@@ -9,5 +9,5 @@ public interface ITransactionService
     Task<TransactionDto> CreateAsync(CreateTransactionDto dto);
     Task UpdateAsync(Guid id, UpdateTransactionDto dto);
     Task DeleteAsync(Guid id);
-    Task<decimal> GetTotalByTypeAsync(Guid userId, Domain.Enums.CategoryType type, int month, int year);
+    Task<decimal> GetTotalByTypeAsync(GetTotalByTypeRequestDto request);
 }
