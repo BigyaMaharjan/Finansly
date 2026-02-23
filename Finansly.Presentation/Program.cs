@@ -5,12 +5,14 @@ using Finansly.Application.Interfaces.Users;
 using Finansly.Application.Services.Auth;
 using Finansly.Application.Services.Categories;
 using Finansly.Application.Services.Transactions;
+using Finansly.Application.Services.Users;
 using Finansly.Infrastructure.Persistence;
 using Finansly.Infrastructure.Repositories;
 using Finansly.Infrastructure.Security;
 using Finansly.Infrastructure.Services.Auth;
 using Finansly.Infrastructure.Services.Categories;
 using Finansly.Infrastructure.Services.Transactions;
+using Finansly.Infrastructure.Services.Users;
 using Finansly.Application.Validators.Transactions;
 using Finansly.Presentation.Extensions;
 using Finansly.Presentation.Filters;
@@ -83,6 +85,7 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
