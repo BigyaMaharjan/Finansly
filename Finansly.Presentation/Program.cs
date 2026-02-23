@@ -11,8 +11,11 @@ using Finansly.Infrastructure.Security;
 using Finansly.Infrastructure.Services.Auth;
 using Finansly.Infrastructure.Services.Categories;
 using Finansly.Infrastructure.Services.Transactions;
+using Finansly.Application.Validators.Transactions;
 using Finansly.Presentation.Extensions;
+using Finansly.Presentation.Filters;
 using Finansly.Presentation.Middleware;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -39,7 +42,10 @@ builder.Services.AddOpenApiWithJwtAuth();
 
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddControllers();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateTransactionDtoValidator>();
+builder.Services.AddScoped<ValidationFilter>();
+
+builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>());
 
 builder.Services.AddDbContext<FinanslyDbContext>(options =>
     options.UseNpgsql(
