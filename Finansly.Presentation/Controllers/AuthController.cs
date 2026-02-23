@@ -37,4 +37,17 @@ public class AuthController : ControllerBase
 
         return Ok(ApiResponse<AuthResponseDto>.Ok(result));
     }
+
+    /// <summary>
+    /// Registers a new user and returns a JWT token.
+    /// </summary>
+    [HttpPost("register")]
+    [ProducesResponseType(typeof(ApiResponse<AuthResponseDto>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse<Dictionary<string, string[]>>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<ApiResponse<AuthResponseDto>>> Register([FromBody] RegisterRequestDto dto)
+    {
+        var result = await _authService.RegisterAsync(dto);
+        return StatusCode(StatusCodes.Status201Created, ApiResponse<AuthResponseDto>.Created(result));
+    }
 }

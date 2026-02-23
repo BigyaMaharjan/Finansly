@@ -14,4 +14,9 @@ public class UserRepository : BaseRepository<User>, IUserRepository
         return await _dbSet
             .FirstOrDefaultAsync(u => u.Email == email && !u.IsDeleted);
     }
+
+    public async Task<bool> ExistsEmailAsync(string email)
+    {
+        return await _dbSet.AnyAsync(u => u.Email == email && !u.IsDeleted);
+    }
 }

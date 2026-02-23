@@ -5,6 +5,7 @@ using Finansly.Application.Common.Interfaces;
 using Finansly.Application.DTOs.Auth;
 using Finansly.Application.Interfaces.Users;
 using Finansly.Application.Services.Auth;
+using Finansly.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -29,6 +30,30 @@ public class AuthService : IAuthService
         if (user is null || !_passwordHasher.Verify(dto.Password, user.PasswordHash))
             return null;
 
+        return BuildToken(user);
+    }
+
+    public async Task<AuthResponseDto> RegisterAsync(RegisterRequestDto dto)
+    {
+        if (await _userRepository.ExistsEmailAsync(dto.Email))
+            throw new InvalidOperationException($"Email '{dto.Email}' is already registered.");
+
+        var user = new User
+        {
+            Name = dto.Name,
+            Email = dto.Email,
+            PasswordHash = _passwordHasher.Hash(dto.Password),
+            DateOfBirth = dto.DateOfBirth
+        };
+
+        await _userRepository.AddAsync(user);
+        await _userRepository.SaveChangesAsync();
+
+        return BuildToken(user);
+    }
+
+    private AuthResponseDto BuildToken(User user)
+    {
         var jwtSettings = _configuration.GetSection("JwtSettings");
         var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);
         var expiresAt = DateTime.UtcNow.AddMinutes(double.Parse(jwtSettings["DurationInMinutes"]!));
