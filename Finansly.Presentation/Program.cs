@@ -1,4 +1,9 @@
+using Finansly.Application.Common.Interfaces;
+using Finansly.Application.Interfaces.Transactions;
+using Finansly.Application.Services.Transactions;
 using Finansly.Infrastructure.Persistence;
+using Finansly.Infrastructure.Repositories;
+using Finansly.Infrastructure.Services.Transactions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -52,6 +57,10 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
+
+builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
 
 var app = builder.Build();
 
