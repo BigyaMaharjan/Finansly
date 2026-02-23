@@ -1,3 +1,4 @@
+using Finansly.Application.Common.Models;
 using Finansly.Application.DTOs.Transactions;
 using Finansly.Application.Interfaces.Transactions;
 using Finansly.Application.Services.Transactions;
@@ -14,10 +15,9 @@ public class TransactionService : ITransactionService
         _repository = repository;
     }
 
-    public async Task<IEnumerable<TransactionDto>> GetAllByUserAsync(Guid userId)
+    public async Task<PagedResultDto<TransactionDto>> GetPagedAsync(Guid userId, GetTransactionsRequestDto request)
     {
-        var transactions = await _repository.GetByUserAsync(userId);
-        return transactions.Select(MapToDto);
+        return await _repository.GetPagedAsync(userId, request);
     }
 
     public async Task<TransactionDto?> GetByIdAsync(Guid id)

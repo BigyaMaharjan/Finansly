@@ -1,7 +1,6 @@
 using Finansly.Application.Common.Models;
 using Finansly.Application.DTOs.Transactions;
 using Finansly.Application.Services.Transactions;
-using Finansly.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Finansly.Presentation.Controllers;
@@ -21,14 +20,19 @@ public class TransactionsController : ControllerBase
     }
 
     /// <summary>
-    /// Gets all transactions for a specific user.
+    /// Gets a paginated, filtered, and sorted list of transactions for a specific user.
+    /// Supports: skipCount, maxResultCount, sorting (date|amount|description), sortType (Ascending|Descending),
+    /// categoryId, dateFrom, dateTo, type (Income|Expense).
     /// </summary>
     [HttpGet("user/{userId:guid}")]
-    [ProducesResponseType(typeof(ApiResponse<IEnumerable<TransactionDto>>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<ApiResponse<IEnumerable<TransactionDto>>>> GetAllByUser(Guid userId)
+    [ProducesResponseType(typeof(ApiResponse<PagedResultDto<TransactionDto>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<Dictionary<string, string[]>>), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<ApiResponse<PagedResultDto<TransactionDto>>>> GetPaged(
+        Guid userId,
+        [FromQuery] GetTransactionsRequestDto request)
     {
-        var transactions = await _transactionService.GetAllByUserAsync(userId);
-        return Ok(ApiResponse<IEnumerable<TransactionDto>>.Ok(transactions));
+        var result = await _transactionService.GetPagedAsync(userId, request);
+        return Ok(ApiResponse<PagedResultDto<TransactionDto>>.Ok(result));
     }
 
     /// <summary>
@@ -55,6 +59,7 @@ public class TransactionsController : ControllerBase
     /// </summary>
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse<Dictionary<string, string[]>>), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse<Guid>>> Create([FromBody] CreateTransactionDto dto)
     {
         var id = await _transactionService.CreateAsync(dto);
@@ -67,6 +72,7 @@ public class TransactionsController : ControllerBase
     [HttpPut("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiResponse<Dictionary<string, string[]>>), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse<Guid>>> Update(Guid id, [FromBody] UpdateTransactionDto dto)
     {
         var updatedId = await _transactionService.UpdateAsync(id, dto);
@@ -84,7 +90,7 @@ public class TransactionsController : ControllerBase
         var result = await _transactionService.DeleteAsync(id);
         if (!result)
             return NotFound(ApiResponse<bool>.Fail(404, $"Transaction with id {id} not found."));
-        
+
         return Ok(ApiResponse<bool>.Ok(result, "Transaction deleted successfully."));
     }
 

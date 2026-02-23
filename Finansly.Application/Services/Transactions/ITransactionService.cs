@@ -1,10 +1,11 @@
+using Finansly.Application.Common.Models;
 using Finansly.Application.DTOs.Transactions;
 
 namespace Finansly.Application.Services.Transactions;
 
 public interface ITransactionService
 {
-    Task<IEnumerable<TransactionDto>> GetAllByUserAsync(Guid userId);
+    Task<PagedResultDto<TransactionDto>> GetPagedAsync(Guid userId, GetTransactionsRequestDto request);
     Task<TransactionDto?> GetByIdAsync(Guid id);
     Task<Guid> CreateAsync(CreateTransactionDto dto);
     Task<Guid> UpdateAsync(Guid id, UpdateTransactionDto dto);
