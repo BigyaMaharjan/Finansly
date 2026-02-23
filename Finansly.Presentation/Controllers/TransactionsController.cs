@@ -54,35 +54,38 @@ public class TransactionsController : ControllerBase
     /// Creates a new transaction.
     /// </summary>
     [HttpPost]
-    [ProducesResponseType(typeof(ApiResponse<TransactionDto>), StatusCodes.Status201Created)]
-    public async Task<ActionResult<ApiResponse<TransactionDto>>> Create([FromBody] CreateTransactionDto dto)
+    [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status201Created)]
+    public async Task<ActionResult<ApiResponse<Guid>>> Create([FromBody] CreateTransactionDto dto)
     {
-        var created = await _transactionService.CreateAsync(dto);
-        return CreatedAtAction(nameof(GetById), new { id = created.Id }, ApiResponse<TransactionDto>.Created(created));
+        var id = await _transactionService.CreateAsync(dto);
+        return CreatedAtAction(nameof(GetById), new { id }, ApiResponse<Guid>.Ok(id));
     }
 
     /// <summary>
     /// Updates an existing transaction.
     /// </summary>
     [HttpPut("{id:guid}")]
-    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<object?>>> Update(Guid id, [FromBody] UpdateTransactionDto dto)
+    [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse<Guid>>> Update(Guid id, [FromBody] UpdateTransactionDto dto)
     {
-        await _transactionService.UpdateAsync(id, dto);
-        return Ok(ApiResponse<object?>.Ok(null, "Transaction updated successfully."));
+        var updatedId = await _transactionService.UpdateAsync(id, dto);
+        return Ok(ApiResponse<Guid>.Ok(updatedId, "Transaction updated successfully."));
     }
 
     /// <summary>
     /// Soft-deletes a transaction by its ID.
     /// </summary>
     [HttpDelete("{id:guid}")]
-    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<object?>>> Delete(Guid id)
+    [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse<bool>>> Delete(Guid id)
     {
-        await _transactionService.DeleteAsync(id);
-        return Ok(ApiResponse<object?>.Ok(null, "Transaction deleted successfully."));
+        var result = await _transactionService.DeleteAsync(id);
+        if (!result)
+            return NotFound(ApiResponse<bool>.Fail(404, $"Transaction with id {id} not found."));
+        
+        return Ok(ApiResponse<bool>.Ok(result, "Transaction deleted successfully."));
     }
 
     /// <summary>

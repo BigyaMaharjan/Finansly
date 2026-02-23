@@ -26,7 +26,7 @@ public class TransactionService : ITransactionService
         return transaction is null ? null : MapToDto(transaction);
     }
 
-    public async Task<TransactionDto> CreateAsync(CreateTransactionDto dto)
+    public async Task<Guid> CreateAsync(CreateTransactionDto dto)
     {
         var transaction = new Transaction
         {
@@ -40,10 +40,10 @@ public class TransactionService : ITransactionService
         await _repository.AddAsync(transaction);
         await _repository.SaveChangesAsync();
         
-        return MapToDto(transaction);
+        return transaction.Id;
     }
 
-    public async Task UpdateAsync(Guid id, UpdateTransactionDto dto)
+    public async Task<Guid> UpdateAsync(Guid id, UpdateTransactionDto dto)
     {
         var transaction = await _repository.GetByIdAsync(id);
         if (transaction is null)
@@ -56,16 +56,20 @@ public class TransactionService : ITransactionService
 
         _repository.Update(transaction);
         await _repository.SaveChangesAsync();
+        
+        return transaction.Id;
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task<bool> DeleteAsync(Guid id)
     {
         var transaction = await _repository.GetByIdAsync(id);
         if (transaction is null)
-            throw new KeyNotFoundException($"Transaction with id {id} not found");
+            return false;
 
         _repository.Delete(transaction);
         await _repository.SaveChangesAsync();
+        
+        return true;
     }
 
     public async Task<decimal> GetTotalByTypeAsync(GetTotalByTypeRequestDto request)
