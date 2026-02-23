@@ -79,7 +79,8 @@ public class TransactionsController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<Dictionary<string, string[]>>), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse<Guid>>> Update(Guid id, [FromBody] UpdateTransactionDto dto)
     {
-        var updatedId = await _transactionService.UpdateAsync(id, dto);
+        var userId = GetCurrentUserId();
+        var updatedId = await _transactionService.UpdateAsync(id, userId, dto);
         return Ok(ApiResponse<Guid>.Ok(updatedId, "Transaction updated successfully."));
     }
 
