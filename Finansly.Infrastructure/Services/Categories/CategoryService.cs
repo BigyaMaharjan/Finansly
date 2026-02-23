@@ -26,7 +26,7 @@ public class CategoryService : ICategoryService
         return category is null ? null : MapToDto(category);
     }
 
-    public async Task<CategoryDto> CreateAsync(CreateCategoryDto dto)
+    public async Task<Guid> CreateAsync(CreateCategoryDto dto)
     {
         var category = new Category
         {
@@ -38,10 +38,10 @@ public class CategoryService : ICategoryService
         await _repository.AddAsync(category);
         await _repository.SaveChangesAsync();
 
-        return MapToDto(category);
+        return category.Id;
     }
 
-    public async Task UpdateAsync(Guid id, UpdateCategoryDto dto)
+    public async Task<Guid> UpdateAsync(Guid id, UpdateCategoryDto dto)
     {
         var category = await _repository.GetByIdAsync(id);
         if (category is null)
@@ -52,16 +52,20 @@ public class CategoryService : ICategoryService
 
         _repository.Update(category);
         await _repository.SaveChangesAsync();
+        
+        return category.Id;
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task<bool> DeleteAsync(Guid id)
     {
         var category = await _repository.GetByIdAsync(id);
         if (category is null)
-            throw new KeyNotFoundException($"Category with id {id} not found.");
+            return false;
 
         _repository.Delete(category);
         await _repository.SaveChangesAsync();
+        
+        return true;
     }
 
     private static CategoryDto MapToDto(Category c) => new()

@@ -53,34 +53,37 @@ public class CategoriesController : ControllerBase
     /// Creates a new category.
     /// </summary>
     [HttpPost]
-    [ProducesResponseType(typeof(ApiResponse<CategoryDto>), StatusCodes.Status201Created)]
-    public async Task<ActionResult<ApiResponse<CategoryDto>>> Create([FromBody] CreateCategoryDto dto)
+    [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status201Created)]
+    public async Task<ActionResult<ApiResponse<Guid>>> Create([FromBody] CreateCategoryDto dto)
     {
-        var created = await _categoryService.CreateAsync(dto);
-        return CreatedAtAction(nameof(GetById), new { id = created.Id }, ApiResponse<CategoryDto>.Created(created));
+        var id = await _categoryService.CreateAsync(dto);
+        return CreatedAtAction(nameof(GetById), new { id }, ApiResponse<Guid>.Ok(id));
     }
 
     /// <summary>
     /// Updates an existing category.
     /// </summary>
     [HttpPut("{id:guid}")]
-    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<object?>>> Update(Guid id, [FromBody] UpdateCategoryDto dto)
+    [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse<Guid>>> Update(Guid id, [FromBody] UpdateCategoryDto dto)
     {
-        await _categoryService.UpdateAsync(id, dto);
-        return Ok(ApiResponse<object?>.Ok(null, "Category updated successfully."));
+        var updatedId = await _categoryService.UpdateAsync(id, dto);
+        return Ok(ApiResponse<Guid>.Ok(updatedId, "Category updated successfully."));
     }
 
     /// <summary>
     /// Soft-deletes a category by its ID.
     /// </summary>
     [HttpDelete("{id:guid}")]
-    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<object?>>> Delete(Guid id)
+    [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse<bool>>> Delete(Guid id)
     {
-        await _categoryService.DeleteAsync(id);
-        return Ok(ApiResponse<object?>.Ok(null, "Category deleted successfully."));
+        var result = await _categoryService.DeleteAsync(id);
+        if (!result)
+            return NotFound(ApiResponse<bool>.Fail(404, $"Category with id {id} not found."));
+        
+        return Ok(ApiResponse<bool>.Ok(result, "Category deleted successfully."));
     }
 }
