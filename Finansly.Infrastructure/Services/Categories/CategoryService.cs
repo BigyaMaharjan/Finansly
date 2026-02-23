@@ -26,13 +26,13 @@ public class CategoryService : ICategoryService
         return category is null ? null : MapToDto(category);
     }
 
-    public async Task<Guid> CreateAsync(CreateCategoryDto dto)
+    public async Task<Guid> CreateAsync(Guid userId, CreateCategoryDto dto)
     {
         var category = new Category
         {
             Name = dto.Name,
             Type = dto.Type,
-            UserId = dto.UserId
+            UserId = userId
         };
 
         await _repository.AddAsync(category);
@@ -68,19 +68,19 @@ public class CategoryService : ICategoryService
         return true;
     }
 
-    public async Task<CategoryWithTransactionsResultDto> CreateWithTransactionsAsync(CreateCategoryWithTransactionsDto dto)
+    public async Task<CategoryWithTransactionsResultDto> CreateWithTransactionsAsync(Guid userId, CreateCategoryWithTransactionsDto dto)
     {
         var category = new Category
         {
             Name = dto.Name,
             Type = dto.Type,
-            UserId = dto.UserId,
+            UserId = userId,
             Transactions = dto.Transactions.Select(t => new Transaction
             {
                 Amount = t.Amount,
                 Date = t.Date,
                 Description = t.Description,
-                UserId = dto.UserId
+                UserId = userId
             }).ToList()
         };
 

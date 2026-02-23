@@ -14,8 +14,5 @@ public class CreateCategoryDtoValidator : AbstractValidator<CreateCategoryDto>
 
         RuleFor(x => x.Type)
             .IsInEnum().WithMessage($"Type must be {CategoryType.Income} or {CategoryType.Expense}.");
-
-        RuleFor(x => x.UserId)
-            .NotEmpty().WithMessage("UserId is required.");
     }
 }

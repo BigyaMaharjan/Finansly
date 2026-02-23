@@ -6,8 +6,8 @@ public interface ICategoryService
 {
     Task<IEnumerable<CategoryDto>> GetAllByUserAsync(Guid userId);
     Task<CategoryDto?> GetByIdAsync(Guid id);
-    Task<Guid> CreateAsync(CreateCategoryDto dto);
+    Task<Guid> CreateAsync(Guid userId, CreateCategoryDto dto);
     Task<Guid> UpdateAsync(Guid id, UpdateCategoryDto dto);
     Task<bool> DeleteAsync(Guid id);
-    Task<CategoryWithTransactionsResultDto> CreateWithTransactionsAsync(CreateCategoryWithTransactionsDto dto);
+    Task<CategoryWithTransactionsResultDto> CreateWithTransactionsAsync(Guid userId, CreateCategoryWithTransactionsDto dto);
 }

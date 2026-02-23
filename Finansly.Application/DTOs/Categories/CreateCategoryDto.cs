@@ -6,5 +6,4 @@ public record CreateCategoryDto
 {
     public string Name { get; init; } = null!;
     public CategoryType Type { get; init; }
-    public Guid UserId { get; init; }
 }

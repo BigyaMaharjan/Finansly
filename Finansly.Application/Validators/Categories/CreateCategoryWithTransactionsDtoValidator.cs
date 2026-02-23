@@ -15,9 +15,6 @@ public class CreateCategoryWithTransactionsDtoValidator : AbstractValidator<Crea
         RuleFor(x => x.Type)
             .IsInEnum().WithMessage($"Type must be {CategoryType.Income} or {CategoryType.Expense}.");
 
-        RuleFor(x => x.UserId)
-            .NotEmpty().WithMessage("UserId is required.");
-
         RuleFor(x => x.Transactions)
             .NotEmpty().WithMessage("At least one transaction is required.");
 

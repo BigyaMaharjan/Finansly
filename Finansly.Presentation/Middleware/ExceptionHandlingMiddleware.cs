@@ -24,6 +24,16 @@ public class ExceptionHandlingMiddleware
             _logger.LogWarning(ex, "Resource not found: {Message}", ex.Message);
             await WriteErrorAsync(context, StatusCodes.Status404NotFound, ex.Message);
         }
+        catch (UnauthorizedAccessException ex)
+        {
+            _logger.LogWarning(ex, "Unauthorized access: {Message}", ex.Message);
+            await WriteErrorAsync(context, StatusCodes.Status403Forbidden, ex.Message);
+        }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogWarning(ex, "Conflict: {Message}", ex.Message);
+            await WriteErrorAsync(context, StatusCodes.Status409Conflict, ex.Message);
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unhandled exception on {Method} {Path}",

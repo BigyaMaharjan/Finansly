@@ -1,6 +1,8 @@
+using System.Security.Claims;
 using Finansly.Application.Common.Models;
 using Finansly.Application.DTOs.Categories;
 using Finansly.Application.Services.Categories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Finansly.Presentation.Controllers;
@@ -8,6 +10,7 @@ namespace Finansly.Presentation.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
+[Authorize]
 public class CategoriesController : ControllerBase
 {
     private readonly ICategoryService _categoryService;
@@ -20,12 +23,13 @@ public class CategoriesController : ControllerBase
     }
 
     /// <summary>
-    /// Gets all categories for a specific user.
+    /// Gets all categories for the authenticated user.
     /// </summary>
-    [HttpGet("user/{userId:guid}")]
+    [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<CategoryDto>>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<ApiResponse<IEnumerable<CategoryDto>>>> GetAllByUser(Guid userId)
+    public async Task<ActionResult<ApiResponse<IEnumerable<CategoryDto>>>> GetAll()
     {
+        var userId = GetCurrentUserId();
         var categories = await _categoryService.GetAllByUserAsync(userId);
         return Ok(ApiResponse<IEnumerable<CategoryDto>>.Ok(categories));
     }
@@ -50,14 +54,15 @@ public class CategoriesController : ControllerBase
     }
 
     /// <summary>
-    /// Creates a new category.
+    /// Creates a new category for the authenticated user.
     /// </summary>
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse<Dictionary<string, string[]>>), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse<Guid>>> Create([FromBody] CreateCategoryDto dto)
     {
-        var id = await _categoryService.CreateAsync(dto);
+        var userId = GetCurrentUserId();
+        var id = await _categoryService.CreateAsync(userId, dto);
         return CreatedAtAction(nameof(GetById), new { id }, ApiResponse<Guid>.Ok(id));
     }
 
@@ -98,8 +103,16 @@ public class CategoriesController : ControllerBase
     public async Task<ActionResult<ApiResponse<CategoryWithTransactionsResultDto>>> CreateWithTransactions(
         [FromBody] CreateCategoryWithTransactionsDto dto)
     {
-        var result = await _categoryService.CreateWithTransactionsAsync(dto);
+        var userId = GetCurrentUserId();
+        var result = await _categoryService.CreateWithTransactionsAsync(userId, dto);
         return CreatedAtAction(nameof(GetById), new { id = result.CategoryId },
             ApiResponse<CategoryWithTransactionsResultDto>.Created(result));
+    }
+
+    private Guid GetCurrentUserId()
+    {
+        var sub = User.FindFirstValue(ClaimTypes.NameIdentifier)
+            ?? User.FindFirstValue("sub");
+        return Guid.Parse(sub!);
     }
 }
