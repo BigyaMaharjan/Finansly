@@ -68,6 +68,34 @@ public class CategoryService : ICategoryService
         return true;
     }
 
+    public async Task<CategoryWithTransactionsResultDto> CreateWithTransactionsAsync(CreateCategoryWithTransactionsDto dto)
+    {
+        var category = new Category
+        {
+            Name = dto.Name,
+            Type = dto.Type,
+            UserId = dto.UserId,
+            Transactions = dto.Transactions.Select(t => new Transaction
+            {
+                Amount = t.Amount,
+                Date = t.Date,
+                Description = t.Description,
+                UserId = dto.UserId
+            }).ToList()
+        };
+
+        await _repository.AddAsync(category);
+        await _repository.SaveChangesAsync();
+
+        return new CategoryWithTransactionsResultDto
+        {
+            CategoryId = category.Id,
+            CategoryName = category.Name,
+            TransactionIds = category.Transactions.Select(t => t.Id).ToList(),
+            TransactionCount = category.Transactions.Count
+        };
+    }
+
     private static CategoryDto MapToDto(Category c) => new()
     {
         Id = c.Id,
