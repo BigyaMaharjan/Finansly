@@ -4,6 +4,7 @@ using Finansly.Application.Services.Transactions;
 using Finansly.Infrastructure.Persistence;
 using Finansly.Infrastructure.Repositories;
 using Finansly.Infrastructure.Services.Transactions;
+using Finansly.Presentation.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -26,7 +27,7 @@ builder.Host.UseSerilog();
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApiWithJwtAuth();
 
 builder.Services.AddSwaggerGen();
 
