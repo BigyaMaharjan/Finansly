@@ -37,9 +37,4 @@ public class TransactionRepository : BaseRepository<Transaction>, ITransactionRe
             .Include(t => t.User)
             .FirstOrDefaultAsync(t => t.Id == id);
     }
-
-    public async Task SaveChangesAsync()
-    {
-        await _context.SaveChangesAsync();
-    }
 }
