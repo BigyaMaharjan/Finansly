@@ -7,8 +7,8 @@ public interface ITransactionService
 {
     Task<PagedResultDto<TransactionDto>> GetPagedAsync(Guid userId, GetTransactionsRequestDto request);
     Task<TransactionDto?> GetByIdAsync(Guid id);
-    Task<Guid> CreateAsync(CreateTransactionDto dto);
+    Task<Guid> CreateAsync(Guid userId, CreateTransactionDto dto);
     Task<Guid> UpdateAsync(Guid id, UpdateTransactionDto dto);
     Task<bool> DeleteAsync(Guid id);
-    Task<decimal> GetTotalByTypeAsync(GetTotalByTypeRequestDto request);
+    Task<decimal> GetTotalByTypeAsync(Guid userId, GetTotalByTypeRequestDto request);
 }

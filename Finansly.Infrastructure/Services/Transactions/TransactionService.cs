@@ -26,7 +26,7 @@ public class TransactionService : ITransactionService
         return transaction is null ? null : MapToDto(transaction);
     }
 
-    public async Task<Guid> CreateAsync(CreateTransactionDto dto)
+    public async Task<Guid> CreateAsync(Guid userId, CreateTransactionDto dto)
     {
         var transaction = new Transaction
         {
@@ -34,12 +34,12 @@ public class TransactionService : ITransactionService
             Date = dto.Date,
             Description = dto.Description,
             CategoryId = dto.CategoryId,
-            UserId = dto.UserId
+            UserId = userId
         };
 
         await _repository.AddAsync(transaction);
         await _repository.SaveChangesAsync();
-        
+
         return transaction.Id;
     }
 
@@ -72,9 +72,9 @@ public class TransactionService : ITransactionService
         return true;
     }
 
-    public async Task<decimal> GetTotalByTypeAsync(GetTotalByTypeRequestDto request)
+    public async Task<decimal> GetTotalByTypeAsync(Guid userId, GetTotalByTypeRequestDto request)
     {
-        return await _repository.GetTotalByTypeAsync(request);
+        return await _repository.GetTotalByTypeAsync(userId, request);
     }
 
     private static TransactionDto MapToDto(Transaction t) => new()

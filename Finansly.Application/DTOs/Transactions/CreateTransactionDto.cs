@@ -6,5 +6,4 @@ public record CreateTransactionDto
     public DateTime Date { get; init; }
     public string Description { get; init; } = null!;
     public Guid CategoryId { get; init; }
-    public Guid UserId { get; init; }
 }

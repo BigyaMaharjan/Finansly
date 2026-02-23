@@ -21,11 +21,11 @@ public class TransactionRepository : BaseRepository<Transaction>, ITransactionRe
             .ToListAsync();
     }
 
-    public async Task<decimal> GetTotalByTypeAsync(GetTotalByTypeRequestDto request)
+    public async Task<decimal> GetTotalByTypeAsync(Guid userId, GetTotalByTypeRequestDto request)
     {
         return await _dbSet
             .Include(t => t.Category)
-            .Where(t => t.UserId == request.UserId
+            .Where(t => t.UserId == userId
                 && t.Category.Type == request.Type
                 && t.Date.Month == request.Month
                 && t.Date.Year == request.Year)

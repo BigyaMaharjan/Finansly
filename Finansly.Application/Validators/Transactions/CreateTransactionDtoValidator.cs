@@ -20,8 +20,5 @@ public class CreateTransactionDtoValidator : AbstractValidator<CreateTransaction
 
         RuleFor(x => x.CategoryId)
             .NotEmpty().WithMessage("CategoryId is required.");
-
-        RuleFor(x => x.UserId)
-            .NotEmpty().WithMessage("UserId is required.");
     }
 }

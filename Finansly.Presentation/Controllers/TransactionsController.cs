@@ -1,6 +1,8 @@
+using System.Security.Claims;
 using Finansly.Application.Common.Models;
 using Finansly.Application.DTOs.Transactions;
 using Finansly.Application.Services.Transactions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Finansly.Presentation.Controllers;
@@ -8,6 +10,7 @@ namespace Finansly.Presentation.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
+[Authorize]
 public class TransactionsController : ControllerBase
 {
     private readonly ITransactionService _transactionService;
@@ -20,17 +23,17 @@ public class TransactionsController : ControllerBase
     }
 
     /// <summary>
-    /// Gets a paginated, filtered, and sorted list of transactions for a specific user.
+    /// Gets a paginated, filtered, and sorted list of transactions for the authenticated user.
     /// Supports: skipCount, maxResultCount, sorting (date|amount|description), sortType (Ascending|Descending),
     /// categoryId, dateFrom, dateTo, type (Income|Expense).
     /// </summary>
-    [HttpGet("user/{userId:guid}")]
+    [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<PagedResultDto<TransactionDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<Dictionary<string, string[]>>), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse<PagedResultDto<TransactionDto>>>> GetPaged(
-        Guid userId,
         [FromQuery] GetTransactionsRequestDto request)
     {
+        var userId = GetCurrentUserId();
         var result = await _transactionService.GetPagedAsync(userId, request);
         return Ok(ApiResponse<PagedResultDto<TransactionDto>>.Ok(result));
     }
@@ -55,14 +58,15 @@ public class TransactionsController : ControllerBase
     }
 
     /// <summary>
-    /// Creates a new transaction.
+    /// Creates a new transaction for the authenticated user.
     /// </summary>
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse<Dictionary<string, string[]>>), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse<Guid>>> Create([FromBody] CreateTransactionDto dto)
     {
-        var id = await _transactionService.CreateAsync(dto);
+        var userId = GetCurrentUserId();
+        var id = await _transactionService.CreateAsync(userId, dto);
         return CreatedAtAction(nameof(GetById), new { id }, ApiResponse<Guid>.Ok(id));
     }
 
@@ -95,9 +99,9 @@ public class TransactionsController : ControllerBase
     }
 
     /// <summary>
-    /// Gets the total transaction amount for a user by category type (Income/Expense), filtered by month and year.
+    /// Gets the total transaction amount for the authenticated user by category type (Income/Expense), filtered by month and year.
     /// </summary>
-    [HttpGet("user/{userId:guid}/summary")]
+    [HttpGet("summary")]
     [ProducesResponseType(typeof(ApiResponse<decimal>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<decimal>), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse<decimal>>> GetSummary(
@@ -109,7 +113,15 @@ public class TransactionsController : ControllerBase
         if (request.Year < 2000 || request.Year > DateTime.UtcNow.Year + 1)
             return BadRequest(ApiResponse<decimal>.Fail(400, "Year is out of a valid range."));
 
-        var total = await _transactionService.GetTotalByTypeAsync(request);
+        var userId = GetCurrentUserId();
+        var total = await _transactionService.GetTotalByTypeAsync(userId, request);
         return Ok(ApiResponse<decimal>.Ok(total));
+    }
+
+    private Guid GetCurrentUserId()
+    {
+        var sub = User.FindFirstValue(ClaimTypes.NameIdentifier)
+            ?? User.FindFirstValue("sub");
+        return Guid.Parse(sub!);
     }
 }
