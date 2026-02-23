@@ -1,12 +1,15 @@
 using Finansly.Application.Common.Interfaces;
+using Finansly.Application.Interfaces.Categories;
 using Finansly.Application.Interfaces.Transactions;
 using Finansly.Application.Interfaces.Users;
 using Finansly.Application.Services.Auth;
+using Finansly.Application.Services.Categories;
 using Finansly.Application.Services.Transactions;
 using Finansly.Infrastructure.Persistence;
 using Finansly.Infrastructure.Repositories;
 using Finansly.Infrastructure.Security;
 using Finansly.Infrastructure.Services.Auth;
+using Finansly.Infrastructure.Services.Categories;
 using Finansly.Infrastructure.Services.Transactions;
 using Finansly.Presentation.Extensions;
 using Finansly.Presentation.Middleware;
@@ -70,6 +73,8 @@ builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 
