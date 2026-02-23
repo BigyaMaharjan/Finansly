@@ -9,6 +9,7 @@ using Finansly.Infrastructure.Security;
 using Finansly.Infrastructure.Services.Auth;
 using Finansly.Infrastructure.Services.Transactions;
 using Finansly.Presentation.Extensions;
+using Finansly.Presentation.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -96,6 +97,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 
