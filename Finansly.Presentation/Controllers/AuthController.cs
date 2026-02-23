@@ -1,3 +1,4 @@
+using Finansly.Application.Common.Models;
 using Finansly.Application.DTOs.Auth;
 using Finansly.Application.Services.Auth;
 using Microsoft.AspNetCore.Mvc;
@@ -22,23 +23,18 @@ public class AuthController : ControllerBase
     /// Authenticates a user and returns a JWT token.
     /// </summary>
     [HttpPost("login")]
-    [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<AuthResponseDto>> Login([FromBody] LoginRequestDto dto)
+    [ProducesResponseType(typeof(ApiResponse<AuthResponseDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<AuthResponseDto>), StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult<ApiResponse<AuthResponseDto>>> Login([FromBody] LoginRequestDto dto)
     {
-        try
-        {
-            var result = await _authService.LoginAsync(dto);
-            if (result is null)
-                return Unauthorized("Invalid email or password.");
+        var result = await _authService.LoginAsync(dto);
 
-            return Ok(result);
-        }
-        catch (Exception ex)
+        if (result is null)
         {
-            _logger.LogError(ex, "Error during login for {Email}", dto.Email);
-            return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred.");
+            _logger.LogWarning("Failed login attempt for {Email}", dto.Email);
+            return Unauthorized(ApiResponse<AuthResponseDto>.Fail(401, "Invalid email or password."));
         }
+
+        return Ok(ApiResponse<AuthResponseDto>.Ok(result));
     }
 }
