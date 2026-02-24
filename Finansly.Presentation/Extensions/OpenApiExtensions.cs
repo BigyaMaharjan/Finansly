@@ -11,15 +11,28 @@ public static class OpenApiExtensions
             options.AddDocumentTransformer((document, context, cancellationToken) =>
             {
                 document.Components ??= new OpenApiComponents();
-                document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
+                document.Components.SecuritySchemes ??=
+                    new Dictionary<string, IOpenApiSecurityScheme>();
 
-                document.Components.SecuritySchemes["Bearer"] = new OpenApiSecurityScheme
-                {
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "bearer",
-                    BearerFormat = "JWT",
-                    Description = "Enter your JWT token below. Example: eyJhbGci..."
-                };
+                document.Components.SecuritySchemes["Bearer"] =
+                    new OpenApiSecurityScheme
+                    {
+                        Type = SecuritySchemeType.Http,
+                        Scheme = "bearer",
+                        BearerFormat = "JWT",
+                        Description = "Enter JWT token"
+                    };
+
+                document.Security ??= new List<OpenApiSecurityRequirement>();
+
+                document.Security.Add(
+                    new OpenApiSecurityRequirement
+                    {
+                        {
+                            new OpenApiSecuritySchemeReference("Bearer"),
+                            new List<string>()
+                        }
+                    });
 
                 return Task.CompletedTask;
             });
