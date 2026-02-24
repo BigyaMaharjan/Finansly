@@ -23,16 +23,15 @@ public static class OpenApiExtensions
                         Description = "Enter JWT token"
                     };
 
-                document.Security ??= new List<OpenApiSecurityRequirement>();
-
-                document.Security.Add(
-                    new OpenApiSecurityRequirement
+                foreach (var path in document.Paths.Values)
+                    foreach (var operation in path.Operations.Values)
                     {
+                        operation.Security ??= [];
+                        operation.Security.Add(new OpenApiSecurityRequirement
                         {
-                            new OpenApiSecuritySchemeReference("Bearer"),
-                            new List<string>()
-                        }
-                    });
+                            { new OpenApiSecuritySchemeReference("Bearer", document), [] }
+                        });
+                    }
 
                 return Task.CompletedTask;
             });
