@@ -29,7 +29,7 @@ public class ReportsController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<MonthlySummaryDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse<MonthlySummaryDto>>> GetMonthlySummary(
-        [FromQuery] int month, [FromQuery] int year)
+        [FromQuery] int month, [FromQuery] int year, CancellationToken cancellationToken)
     {
         if (month < 1 || month > 12)
             return BadRequest(ApiResponse<MonthlySummaryDto>.Fail(400, "Month must be between 1 and 12."));
@@ -38,7 +38,7 @@ public class ReportsController : ControllerBase
             return BadRequest(ApiResponse<MonthlySummaryDto>.Fail(400, "Year is out of a valid range."));
 
         var userId = GetCurrentUserId();
-        var result = await _reportService.GetMonthlySummaryAsync(userId, month, year);
+        var result = await _reportService.GetMonthlySummaryAsync(userId, month, year, cancellationToken);
         return Ok(ApiResponse<MonthlySummaryDto>.Ok(result));
     }
 
@@ -49,7 +49,7 @@ public class ReportsController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<CategoryBreakdownDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse<IEnumerable<CategoryBreakdownDto>>>> GetCategoryBreakdown(
-        [FromQuery] int month, [FromQuery] int year)
+        [FromQuery] int month, [FromQuery] int year, CancellationToken cancellationToken)
     {
         if (month < 1 || month > 12)
             return BadRequest(ApiResponse<IEnumerable<CategoryBreakdownDto>>.Fail(400, "Month must be between 1 and 12."));
@@ -58,7 +58,7 @@ public class ReportsController : ControllerBase
             return BadRequest(ApiResponse<IEnumerable<CategoryBreakdownDto>>.Fail(400, "Year is out of a valid range."));
 
         var userId = GetCurrentUserId();
-        var result = await _reportService.GetCategoryBreakdownAsync(userId, month, year);
+        var result = await _reportService.GetCategoryBreakdownAsync(userId, month, year, cancellationToken);
         return Ok(ApiResponse<IEnumerable<CategoryBreakdownDto>>.Ok(result));
     }
 
@@ -67,10 +67,10 @@ public class ReportsController : ControllerBase
     /// </summary>
     [HttpGet("balance")]
     [ProducesResponseType(typeof(ApiResponse<MonthlySummaryDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<ApiResponse<MonthlySummaryDto>>> GetBalance()
+    public async Task<ActionResult<ApiResponse<MonthlySummaryDto>>> GetBalance(CancellationToken cancellationToken)
     {
         var userId = GetCurrentUserId();
-        var result = await _reportService.GetBalanceAsync(userId);
+        var result = await _reportService.GetBalanceAsync(userId, cancellationToken);
         return Ok(ApiResponse<MonthlySummaryDto>.Ok(result));
     }
 

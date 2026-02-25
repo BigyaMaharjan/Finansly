@@ -15,7 +15,7 @@ public class ReportRepository : IReportRepository
         _connectionString = configuration.GetConnectionString("DefaultConnection")!;
     }
 
-    public async Task<MonthlySummaryDto> GetMonthlySummaryAsync(Guid userId, int month, int year)
+    public async Task<MonthlySummaryDto> GetMonthlySummaryAsync(Guid userId, int month, int year, CancellationToken cancellationToken = default)
     {
         const string sql = """
             SELECT
@@ -31,8 +31,8 @@ public class ReportRepository : IReportRepository
             """;
 
         await using var conn = new NpgsqlConnection(_connectionString);
-        var row = await conn.QuerySingleAsync<(decimal Income, decimal Expense)>(
-            sql, new { UserId = userId, Month = month, Year = year });
+        var cmd = new CommandDefinition(sql, new { UserId = userId, Month = month, Year = year }, cancellationToken: cancellationToken);
+        var row = await conn.QuerySingleAsync<(decimal Income, decimal Expense)>(cmd);
 
         return new MonthlySummaryDto
         {
@@ -43,7 +43,7 @@ public class ReportRepository : IReportRepository
         };
     }
 
-    public async Task<IEnumerable<CategoryBreakdownDto>> GetCategoryBreakdownAsync(Guid userId, int month, int year)
+    public async Task<IEnumerable<CategoryBreakdownDto>> GetCategoryBreakdownAsync(Guid userId, int month, int year, CancellationToken cancellationToken = default)
     {
         const string sql = """
             SELECT
@@ -64,11 +64,11 @@ public class ReportRepository : IReportRepository
             """;
 
         await using var conn = new NpgsqlConnection(_connectionString);
-        return await conn.QueryAsync<CategoryBreakdownDto>(
-            sql, new { UserId = userId, Month = month, Year = year });
+        var cmd = new CommandDefinition(sql, new { UserId = userId, Month = month, Year = year }, cancellationToken: cancellationToken);
+        return await conn.QueryAsync<CategoryBreakdownDto>(cmd);
     }
 
-    public async Task<MonthlySummaryDto> GetBalanceAsync(Guid userId)
+    public async Task<MonthlySummaryDto> GetBalanceAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         const string sql = """
             SELECT
@@ -82,8 +82,8 @@ public class ReportRepository : IReportRepository
             """;
 
         await using var conn = new NpgsqlConnection(_connectionString);
-        var row = await conn.QuerySingleAsync<(decimal Income, decimal Expense)>(
-            sql, new { UserId = userId });
+        var cmd = new CommandDefinition(sql, new { UserId = userId }, cancellationToken: cancellationToken);
+        var row = await conn.QuerySingleAsync<(decimal Income, decimal Expense)>(cmd);
 
         return new MonthlySummaryDto
         {
