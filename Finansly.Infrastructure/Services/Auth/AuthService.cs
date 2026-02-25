@@ -42,8 +42,8 @@ public class AuthService : IAuthService
 
         var user = new User
         {
-            Name = dto.Name,
-            Email = dto.Email,
+            Name = dto.Name.Trim(),
+            Email = dto.Email.Trim(),
             PasswordHash = _passwordHasher.Hash(dto.Password),
             DateOfBirth = dto.DateOfBirth
         };

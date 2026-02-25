@@ -37,7 +37,7 @@ public class TransactionService : ITransactionService
         {
             Amount = dto.Amount,
             Date = dto.Date,
-            Description = dto.Description,
+            Description = dto.Description.Trim(),
             CategoryId = dto.CategoryId,
             UserId = userId
         };
@@ -61,7 +61,7 @@ public class TransactionService : ITransactionService
 
         transaction.Amount = dto.Amount;
         transaction.Date = dto.Date;
-        transaction.Description = dto.Description;
+        transaction.Description = dto.Description.Trim();
         transaction.CategoryId = dto.CategoryId;
 
         _repository.Update(transaction);

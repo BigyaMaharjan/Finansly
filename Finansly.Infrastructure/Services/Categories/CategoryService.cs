@@ -30,7 +30,7 @@ public class CategoryService : ICategoryService
     {
         var category = new Category
         {
-            Name = dto.Name,
+            Name = dto.Name.Trim(),
             Type = dto.Type,
             UserId = userId
         };
@@ -47,7 +47,7 @@ public class CategoryService : ICategoryService
         if (category is null)
             throw new KeyNotFoundException($"Category with id {id} not found.");
 
-        category.Name = dto.Name;
+        category.Name = dto.Name.Trim();
         category.Type = dto.Type;
 
         _repository.Update(category);
@@ -72,14 +72,14 @@ public class CategoryService : ICategoryService
     {
         var category = new Category
         {
-            Name = dto.Name,
+            Name = dto.Name.Trim(),
             Type = dto.Type,
             UserId = userId,
             Transactions = dto.Transactions.Select(t => new Transaction
             {
                 Amount = t.Amount,
                 Date = t.Date,
-                Description = t.Description,
+                Description = t.Description.Trim(),
                 UserId = userId
             }).ToList()
         };

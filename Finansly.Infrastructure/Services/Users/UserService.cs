@@ -26,10 +26,10 @@ public class UserService : IUserService
         if (user is null)
             throw new KeyNotFoundException($"User with id {id} not found.");
 
-        user.Name = dto.Name;
+        user.Name = dto.Name.Trim();
         if (dto.DateOfBirth.HasValue)
             user.DateOfBirth = dto.DateOfBirth.Value;
-        user.Bio = dto.Bio;
+        user.Bio = dto.Bio?.Trim();
 
         _repository.Update(user);
         await _repository.SaveChangesAsync();
