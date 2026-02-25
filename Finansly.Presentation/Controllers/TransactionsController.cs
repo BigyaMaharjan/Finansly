@@ -26,8 +26,6 @@ public class TransactionsController : ControllerBase
 
     /// <summary>
     /// Gets a paginated, filtered, and sorted list of transactions for the authenticated user.
-    /// Supports: skipCount, maxResultCount, sorting (date|amount|description), sortType (Ascending|Descending),
-    /// categoryId, dateFrom, dateTo, type (Income|Expense).
     /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<PagedResultDto<TransactionDto>>), StatusCodes.Status200OK)]
