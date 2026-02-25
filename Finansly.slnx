@@ -3,4 +3,5 @@
   <Project Path="Finansly.Domain/Finansly.Domain.csproj" />
   <Project Path="Finansly.Infrastructure/Finansly.Infrastructure.csproj" />
   <Project Path="Finansly.Presentation/Finansly.Presentation.csproj" />
+  <Project Path="Finansly.Tests/Finansly.Tests.csproj" />
 </Solution>
