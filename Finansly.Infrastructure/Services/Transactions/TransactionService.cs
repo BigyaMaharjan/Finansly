@@ -18,9 +18,9 @@ public class TransactionService : ITransactionService
         _categoryRepository = categoryRepository;
     }
 
-    public async Task<PagedResultDto<TransactionDto>> GetPagedAsync(Guid userId, GetTransactionsRequestDto request)
+    public async Task<PagedResultDto<TransactionDto>> GetPagedAsync(Guid userId, GetTransactionsRequestDto request, CancellationToken cancellationToken = default)
     {
-        return await _repository.GetPagedAsync(userId, request);
+        return await _repository.GetPagedAsync(userId, request, cancellationToken);
     }
 
     public async Task<TransactionDto?> GetByIdAsync(Guid id)

@@ -9,5 +9,5 @@ public interface ITransactionRepository : IBaseRepository<Transaction>
 {
     Task<IEnumerable<Transaction>> GetByUserAsync(Guid userId);
     Task<decimal> GetTotalByTypeAsync(Guid userId, GetTotalByTypeRequestDto request);
-    Task<PagedResultDto<TransactionDto>> GetPagedAsync(Guid userId, GetTransactionsRequestDto request);
+    Task<PagedResultDto<TransactionDto>> GetPagedAsync(Guid userId, GetTransactionsRequestDto request, CancellationToken cancellationToken = default);
 }

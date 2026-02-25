@@ -33,10 +33,10 @@ public class TransactionsController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<PagedResultDto<TransactionDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<Dictionary<string, string[]>>), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse<PagedResultDto<TransactionDto>>>> GetPaged(
-        [FromQuery] GetTransactionsRequestDto request)
+        [FromQuery] GetTransactionsRequestDto request, CancellationToken cancellationToken)
     {
         var userId = GetCurrentUserId();
-        var result = await _transactionService.GetPagedAsync(userId, request);
+        var result = await _transactionService.GetPagedAsync(userId, request, cancellationToken);
         return Ok(ApiResponse<PagedResultDto<TransactionDto>>.Ok(result));
     }
 

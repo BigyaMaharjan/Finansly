@@ -32,7 +32,7 @@ public class TransactionRepository : BaseRepository<Transaction>, ITransactionRe
             .SumAsync(t => t.Amount);
     }
 
-    public async Task<PagedResultDto<TransactionDto>> GetPagedAsync(Guid userId, GetTransactionsRequestDto request)
+    public async Task<PagedResultDto<TransactionDto>> GetPagedAsync(Guid userId, GetTransactionsRequestDto request, CancellationToken cancellationToken = default)
     {
         // 1. FILTER
         var query = _dbSet
@@ -76,11 +76,11 @@ public class TransactionRepository : BaseRepository<Transaction>, ITransactionRe
         };
 
         // 4. PAGINATE
-        var totalCount = await query.CountAsync();
+        var totalCount = await query.CountAsync(cancellationToken);
         var paged = sorted.Skip(request.SkipCount).Take(request.MaxResultCount);
 
         // 5. MATERIALIZE
-        var items = await paged.ToListAsync();
+        var items = await paged.ToListAsync(cancellationToken);
 
         return new PagedResultDto<TransactionDto>
         {
