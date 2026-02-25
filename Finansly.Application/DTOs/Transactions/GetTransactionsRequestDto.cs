@@ -9,4 +9,5 @@ public record GetTransactionsRequestDto : PagedAndSortedRequestDto
     public DateTime? DateFrom { get; init; }
     public DateTime? DateTo { get; init; }
     public CategoryType? Type { get; init; }
+    public string? SearchKeyword { get; init; }
 }

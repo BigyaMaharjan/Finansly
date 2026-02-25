@@ -3,8 +3,10 @@ using Finansly.Application.Common.Models;
 using Finansly.Application.DTOs.Transactions;
 using Finansly.Application.Interfaces.Transactions;
 using Finansly.Domain.Entities;
+using Finansly.Infrastructure.Extensions;
 using Finansly.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Dynamic.Core;
 
 namespace Finansly.Infrastructure.Repositories;
 
@@ -37,19 +39,14 @@ public class TransactionRepository : BaseRepository<Transaction>, ITransactionRe
         // 1. FILTER
         var query = _dbSet
             .Include(t => t.Category)
-            .Where(t => t.UserId == userId);
-
-        if (request.CategoryId.HasValue)
-            query = query.Where(t => t.CategoryId == request.CategoryId.Value);
-
-        if (request.Type.HasValue)
-            query = query.Where(t => t.Category.Type == request.Type.Value);
-
-        if (request.DateFrom.HasValue)
-            query = query.Where(t => t.Date >= request.DateFrom.Value);
-
-        if (request.DateTo.HasValue)
-            query = query.Where(t => t.Date <= request.DateTo.Value);
+            .Where(t => t.UserId == userId)
+            .WhereIf(request.CategoryId.HasValue,  t => t.CategoryId == request.CategoryId!.Value)
+            .WhereIf(request.Type.HasValue,         t => t.Category.Type == request.Type!.Value)
+            .WhereIf(request.DateFrom.HasValue,     t => t.Date.ToLocalTime() >= request.DateFrom!.Value)
+            .WhereIf(request.DateTo.HasValue,       t => t.Date.ToLocalTime() <= request.DateTo!.Value)
+            .WhereIf(!string.IsNullOrWhiteSpace(request.SearchKeyword),
+                     t => t.Description.Contains(request.SearchKeyword!) ||
+                          t.Category.Name.Contains(request.SearchKeyword!));
 
         // 2. PROJECT
         var projected = query.Select(t => new TransactionDto
@@ -64,23 +61,20 @@ public class TransactionRepository : BaseRepository<Transaction>, ITransactionRe
             CreatedAt = t.CreatedAt
         });
 
-        // 3. SORT
-        var sorted = (request.Sorting?.ToLower(), request.SortType) switch
-        {
-            ("amount",      SortType.Descending) => projected.OrderByDescending(t => t.Amount),
-            ("amount",      _)                        => projected.OrderBy(t => t.Amount),
-            ("description", SortType.Descending) => projected.OrderByDescending(t => t.Description),
-            ("description", _)                        => projected.OrderBy(t => t.Description),
-            (_,             SortType.Descending) => projected.OrderByDescending(t => t.Date),
-            _                                         => projected.OrderBy(t => t.Date)
-        };
+        // 3. SORT — default: CreatedAt DESC
+        var sortExpression = string.IsNullOrWhiteSpace(request.Sorting)
+            ? $"{nameof(TransactionDto.CreatedAt)} DESC"
+            : $"{request.Sorting}";
+
+        var sorted = projected.OrderBy(sortExpression)
+                              .Skip(request.SkipCount)
+                              .Take(request.MaxResultCount);
 
         // 4. PAGINATE
         var totalCount = await query.CountAsync(cancellationToken);
-        var paged = sorted.Skip(request.SkipCount).Take(request.MaxResultCount);
 
         // 5. MATERIALIZE
-        var items = await paged.ToListAsync(cancellationToken);
+        var items = await sorted.ToListAsync(cancellationToken);
 
         return new PagedResultDto<TransactionDto>
         {
