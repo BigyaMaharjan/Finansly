@@ -42,8 +42,8 @@ public class TransactionRepository : BaseRepository<Transaction>, ITransactionRe
             .Where(t => t.UserId == userId)
             .WhereIf(request.CategoryId.HasValue,  t => t.CategoryId == request.CategoryId!.Value)
             .WhereIf(request.Type.HasValue,         t => t.Category.Type == request.Type!.Value)
-            .WhereIf(request.DateFrom.HasValue,     t => t.Date.ToLocalTime() >= request.DateFrom!.Value)
-            .WhereIf(request.DateTo.HasValue,       t => t.Date.ToLocalTime() <= request.DateTo!.Value)
+            .WhereIf(request.DateFrom.HasValue,     t => t.Date >= request.DateFrom!.Value)
+            .WhereIf(request.DateTo.HasValue,       t => t.Date <= request.DateTo!.Value)
             .WhereIf(!string.IsNullOrWhiteSpace(request.SearchKeyword),
                      t => t.Description.Contains(request.SearchKeyword!) ||
                           t.Category.Name.Contains(request.SearchKeyword!));
