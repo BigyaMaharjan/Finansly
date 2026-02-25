@@ -24,6 +24,16 @@ public class ExceptionHandlingMiddleware
             _logger.LogWarning(ex, "Resource not found: {Message}", ex.Message);
             await WriteErrorAsync(context, StatusCodes.Status404NotFound, ex.Message);
         }
+        catch (ArgumentNullException ex)
+        {
+            _logger.LogWarning(ex, "Null argument: {Message}", ex.Message);
+            await WriteErrorAsync(context, StatusCodes.Status400BadRequest, ex.Message);
+        }
+        catch (ArgumentException ex)
+        {
+            _logger.LogWarning(ex, "Invalid argument: {Message}", ex.Message);
+            await WriteErrorAsync(context, StatusCodes.Status400BadRequest, ex.Message);
+        }
         catch (UnauthorizedAccessException ex)
         {
             _logger.LogWarning(ex, "Unauthorized access: {Message}", ex.Message);
