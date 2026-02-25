@@ -25,19 +25,17 @@ public class UsersController : ControllerBase
     /// <summary>
     /// Gets the authenticated user's profile.
     /// </summary>
-    [HttpGet("{id:guid}")]
+    [HttpGet("me")]
     [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<UserDto>>> GetById(Guid id)
+    public async Task<ActionResult<ApiResponse<UserDto>>> GetMe()
     {
-        EnforceOwnership(id);
-
-        var user = await _userService.GetByIdAsync(id);
+        var userId = GetCurrentUserId();
+        var user = await _userService.GetByIdAsync(userId);
         if (user is null)
         {
-            _logger.LogWarning("User {Id} was not found", id);
-            return NotFound(ApiResponse<UserDto>.Fail(404, $"User with id {id} was not found."));
+            _logger.LogWarning("User {Id} was not found", userId);
+            return NotFound(ApiResponse<UserDto>.Fail(404, $"User with id {userId} was not found."));
         }
 
         return Ok(ApiResponse<UserDto>.Ok(user));
@@ -46,42 +44,31 @@ public class UsersController : ControllerBase
     /// <summary>
     /// Updates the authenticated user's profile (name, date of birth, bio).
     /// </summary>
-    [HttpPut("{id:guid}")]
+    [HttpPut("me")]
     [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse<UserDto>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ApiResponse<Dictionary<string, string[]>>), StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<ApiResponse<UserDto>>> Update(Guid id, [FromBody] UpdateUserDto dto)
+    public async Task<ActionResult<ApiResponse<UserDto>>> UpdateMe([FromBody] UpdateUserDto dto)
     {
-        EnforceOwnership(id);
-
-        var user = await _userService.UpdateAsync(id, dto);
+        var userId = GetCurrentUserId();
+        var user = await _userService.UpdateAsync(userId, dto);
         return Ok(ApiResponse<UserDto>.Ok(user, "Profile updated successfully."));
     }
 
     /// <summary>
     /// Soft-deletes the authenticated user's account.
     /// </summary>
-    [HttpDelete("{id:guid}")]
+    [HttpDelete("me")]
     [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<bool>>> Delete(Guid id)
+    public async Task<ActionResult<ApiResponse<bool>>> DeleteMe()
     {
-        EnforceOwnership(id);
-
-        var result = await _userService.DeleteAsync(id);
+        var userId = GetCurrentUserId();
+        var result = await _userService.DeleteAsync(userId);
         if (!result)
-            return NotFound(ApiResponse<bool>.Fail(404, $"User with id {id} not found."));
+            return NotFound(ApiResponse<bool>.Fail(404, $"User with id {userId} not found."));
 
         return Ok(ApiResponse<bool>.Ok(result, "Account deleted successfully."));
-    }
-
-    private void EnforceOwnership(Guid id)
-    {
-        var currentUserId = GetCurrentUserId();
-        if (currentUserId != id)
-            throw new UnauthorizedAccessException("You can only access your own profile.");
     }
 
     private Guid GetCurrentUserId()
