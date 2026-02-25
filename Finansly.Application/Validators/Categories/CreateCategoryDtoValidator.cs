@@ -1,4 +1,5 @@
 using Finansly.Application.DTOs.Categories;
+using Finansly.Domain.Constants;
 using Finansly.Domain.Enums;
 using FluentValidation;
 
@@ -10,7 +11,7 @@ public class CreateCategoryDtoValidator : AbstractValidator<CreateCategoryDto>
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Name is required.")
-            .MaximumLength(100).WithMessage("Name cannot exceed 100 characters.");
+            .MaximumLength(EntityLengths.Category.Name).WithMessage($"Name cannot exceed {EntityLengths.Category.Name} characters.");
 
         RuleFor(x => x.Type)
             .IsInEnum().WithMessage($"Type must be {CategoryType.Income} or {CategoryType.Expense}.");

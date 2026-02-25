@@ -1,4 +1,5 @@
 using Finansly.Application.DTOs.Auth;
+using Finansly.Domain.Constants;
 using FluentValidation;
 
 namespace Finansly.Application.Validators.Auth;
@@ -9,7 +10,7 @@ public class RegisterRequestDtoValidator : AbstractValidator<RegisterRequestDto>
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Name is required.")
-            .MaximumLength(100).WithMessage("Name must not exceed 100 characters.");
+            .MaximumLength(EntityLengths.User.Name).WithMessage($"Name must not exceed {EntityLengths.User.Name} characters.");
 
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Email is required.")

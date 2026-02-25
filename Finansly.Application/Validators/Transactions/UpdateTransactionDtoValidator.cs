@@ -1,4 +1,5 @@
 using Finansly.Application.DTOs.Transactions;
+using Finansly.Domain.Constants;
 using FluentValidation;
 
 namespace Finansly.Application.Validators.Transactions;
@@ -16,7 +17,7 @@ public class UpdateTransactionDtoValidator : AbstractValidator<UpdateTransaction
 
         RuleFor(x => x.Description)
             .NotEmpty().WithMessage("Description is required.")
-            .MaximumLength(500).WithMessage("Description cannot exceed 500 characters.");
+            .MaximumLength(EntityLengths.Transaction.Description).WithMessage($"Description cannot exceed {EntityLengths.Transaction.Description} characters.");
 
         RuleFor(x => x.CategoryId)
             .NotEmpty().WithMessage("CategoryId is required.");
