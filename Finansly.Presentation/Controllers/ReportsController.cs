@@ -14,10 +14,12 @@ namespace Finansly.Presentation.Controllers;
 public class ReportsController : ControllerBase
 {
     private readonly IReportService _reportService;
+    private readonly TimeProvider _timeProvider;
 
-    public ReportsController(IReportService reportService)
+    public ReportsController(IReportService reportService, TimeProvider timeProvider)
     {
         _reportService = reportService;
+        _timeProvider = timeProvider;
     }
 
     /// <summary>
@@ -32,7 +34,7 @@ public class ReportsController : ControllerBase
         if (month < 1 || month > 12)
             return BadRequest(ApiResponse<MonthlySummaryDto>.Fail(400, "Month must be between 1 and 12."));
 
-        if (year < 2000 || year > DateTime.UtcNow.Year + 1)
+        if (year < 2000 || year > _timeProvider.GetUtcNow().Year + 1)
             return BadRequest(ApiResponse<MonthlySummaryDto>.Fail(400, "Year is out of a valid range."));
 
         var userId = GetCurrentUserId();
@@ -52,7 +54,7 @@ public class ReportsController : ControllerBase
         if (month < 1 || month > 12)
             return BadRequest(ApiResponse<IEnumerable<CategoryBreakdownDto>>.Fail(400, "Month must be between 1 and 12."));
 
-        if (year < 2000 || year > DateTime.UtcNow.Year + 1)
+        if (year < 2000 || year > _timeProvider.GetUtcNow().Year + 1)
             return BadRequest(ApiResponse<IEnumerable<CategoryBreakdownDto>>.Fail(400, "Year is out of a valid range."));
 
         var userId = GetCurrentUserId();

@@ -7,7 +7,7 @@ namespace Finansly.Infrastructure.Repositories;
 
 public class CategoryRepository : BaseRepository<Category>, ICategoryRepository
 {
-    public CategoryRepository(FinanslyDbContext context) : base(context) { }
+    public CategoryRepository(FinanslyDbContext context, TimeProvider timeProvider) : base(context, timeProvider) { }
 
     public async Task<IEnumerable<Category>> GetByUserAsync(Guid userId)
     {

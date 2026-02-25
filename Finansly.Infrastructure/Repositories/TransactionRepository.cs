@@ -10,7 +10,7 @@ namespace Finansly.Infrastructure.Repositories;
 
 public class TransactionRepository : BaseRepository<Transaction>, ITransactionRepository
 {
-    public TransactionRepository(FinanslyDbContext context) : base(context) { }
+    public TransactionRepository(FinanslyDbContext context, TimeProvider timeProvider) : base(context, timeProvider) { }
 
     public async Task<IEnumerable<Transaction>> GetByUserAsync(Guid userId)
     {

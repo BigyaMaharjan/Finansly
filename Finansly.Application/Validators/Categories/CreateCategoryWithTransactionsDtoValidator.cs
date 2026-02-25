@@ -6,7 +6,7 @@ namespace Finansly.Application.Validators.Categories;
 
 public class CreateCategoryWithTransactionsDtoValidator : AbstractValidator<CreateCategoryWithTransactionsDto>
 {
-    public CreateCategoryWithTransactionsDtoValidator()
+    public CreateCategoryWithTransactionsDtoValidator(TimeProvider timeProvider)
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Name is required.")
@@ -18,20 +18,20 @@ public class CreateCategoryWithTransactionsDtoValidator : AbstractValidator<Crea
         RuleFor(x => x.Transactions)
             .NotEmpty().WithMessage("At least one transaction is required.");
 
-        RuleForEach(x => x.Transactions).SetValidator(new CreateTransactionForCategoryDtoValidator());
+        RuleForEach(x => x.Transactions).SetValidator(new CreateTransactionForCategoryDtoValidator(timeProvider));
     }
 }
 
 public class CreateTransactionForCategoryDtoValidator : AbstractValidator<CreateTransactionForCategoryDto>
 {
-    public CreateTransactionForCategoryDtoValidator()
+    public CreateTransactionForCategoryDtoValidator(TimeProvider timeProvider)
     {
         RuleFor(x => x.Amount)
             .GreaterThan(0).WithMessage("Amount must be greater than 0.");
 
         RuleFor(x => x.Date)
             .NotEmpty().WithMessage("Date is required.")
-            .LessThanOrEqualTo(DateTime.UtcNow.AddDays(1)).WithMessage("Date cannot be in the future.");
+            .LessThanOrEqualTo(_ => timeProvider.GetUtcNow().UtcDateTime.AddDays(1)).WithMessage("Date cannot be in the future.");
 
         RuleFor(x => x.Description)
             .NotEmpty().WithMessage("Description is required.")

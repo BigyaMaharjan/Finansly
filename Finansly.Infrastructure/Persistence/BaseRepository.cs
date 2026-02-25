@@ -8,11 +8,13 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
 {
     protected readonly FinanslyDbContext _context;
     protected readonly DbSet<T> _dbSet;
+    private readonly TimeProvider _timeProvider;
 
-    public BaseRepository(FinanslyDbContext context)
+    public BaseRepository(FinanslyDbContext context, TimeProvider timeProvider)
     {
         _context = context;
         _dbSet = context.Set<T>();
+        _timeProvider = timeProvider;
     }
 
     public virtual async Task<T?> GetByIdAsync(Guid id)
@@ -27,20 +29,20 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
 
     public virtual async Task AddAsync(T entity)
     {
-        entity.CreatedAt = DateTime.UtcNow;
+        entity.CreatedAt = _timeProvider.GetUtcNow().UtcDateTime;
         await _dbSet.AddAsync(entity);
     }
 
     public virtual void Update(T entity)
     {
-        entity.UpdatedAt = DateTime.UtcNow;
+        entity.UpdatedAt = _timeProvider.GetUtcNow().UtcDateTime;
         _dbSet.Update(entity);
     }
 
     public virtual void Delete(T entity)
     {
         entity.IsDeleted = true;
-        entity.UpdatedAt = DateTime.UtcNow;
+        entity.UpdatedAt = _timeProvider.GetUtcNow().UtcDateTime;
         _dbSet.Update(entity);
     }
     public async Task SaveChangesAsync()

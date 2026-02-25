@@ -5,14 +5,14 @@ namespace Finansly.Application.Validators.Transactions;
 
 public class CreateTransactionDtoValidator : AbstractValidator<CreateTransactionDto>
 {
-    public CreateTransactionDtoValidator()
+    public CreateTransactionDtoValidator(TimeProvider timeProvider)
     {
         RuleFor(x => x.Amount)
             .GreaterThan(0).WithMessage("Amount must be greater than 0.");
 
         RuleFor(x => x.Date)
             .NotEmpty().WithMessage("Date is required.")
-            .LessThanOrEqualTo(DateTime.UtcNow.AddDays(1)).WithMessage("Date cannot be in the future.");
+            .LessThanOrEqualTo(_ => timeProvider.GetUtcNow().UtcDateTime.AddDays(1)).WithMessage("Date cannot be in the future.");
 
         RuleFor(x => x.Description)
             .NotEmpty().WithMessage("Description is required.")

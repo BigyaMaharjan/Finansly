@@ -5,7 +5,7 @@ namespace Finansly.Application.Validators.Auth;
 
 public class RegisterRequestDtoValidator : AbstractValidator<RegisterRequestDto>
 {
-    public RegisterRequestDtoValidator()
+    public RegisterRequestDtoValidator(TimeProvider timeProvider)
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Name is required.")
@@ -21,6 +21,6 @@ public class RegisterRequestDtoValidator : AbstractValidator<RegisterRequestDto>
 
         RuleFor(x => x.DateOfBirth)
             .NotEqual(default(DateTime)).WithMessage("Date of birth is required.")
-            .LessThan(DateTime.UtcNow).WithMessage("Date of birth must be in the past.");
+            .LessThan(_ => timeProvider.GetUtcNow().UtcDateTime).WithMessage("Date of birth must be in the past.");
     }
 }

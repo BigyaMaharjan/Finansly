@@ -15,11 +15,13 @@ public class TransactionsController : ControllerBase
 {
     private readonly ITransactionService _transactionService;
     private readonly ILogger<TransactionsController> _logger;
+    private readonly TimeProvider _timeProvider;
 
-    public TransactionsController(ITransactionService transactionService, ILogger<TransactionsController> logger)
+    public TransactionsController(ITransactionService transactionService, ILogger<TransactionsController> logger, TimeProvider timeProvider)
     {
         _transactionService = transactionService;
         _logger = logger;
+        _timeProvider = timeProvider;
     }
 
     /// <summary>
@@ -111,7 +113,7 @@ public class TransactionsController : ControllerBase
         if (request.Month < 1 || request.Month > 12)
             return BadRequest(ApiResponse<decimal>.Fail(400, "Month must be between 1 and 12."));
 
-        if (request.Year < 2000 || request.Year > DateTime.UtcNow.Year + 1)
+        if (request.Year < 2000 || request.Year > _timeProvider.GetUtcNow().Year + 1)
             return BadRequest(ApiResponse<decimal>.Fail(400, "Year is out of a valid range."));
 
         var userId = GetCurrentUserId();

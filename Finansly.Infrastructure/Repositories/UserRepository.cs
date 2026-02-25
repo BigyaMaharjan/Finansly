@@ -7,7 +7,7 @@ namespace Finansly.Infrastructure.Repositories;
 
 public class UserRepository : BaseRepository<User>, IUserRepository
 {
-    public UserRepository(FinanslyDbContext context) : base(context) { }
+    public UserRepository(FinanslyDbContext context, TimeProvider timeProvider) : base(context, timeProvider) { }
 
     public async Task<User?> GetByEmailAsync(string email)
     {

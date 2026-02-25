@@ -16,12 +16,14 @@ public class AuthService : IAuthService
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IConfiguration _configuration;
+    private readonly TimeProvider _timeProvider;
 
-    public AuthService(IUserRepository userRepository, IPasswordHasher passwordHasher, IConfiguration configuration)
+    public AuthService(IUserRepository userRepository, IPasswordHasher passwordHasher, IConfiguration configuration, TimeProvider timeProvider)
     {
         _userRepository = userRepository;
         _passwordHasher = passwordHasher;
         _configuration = configuration;
+        _timeProvider = timeProvider;
     }
 
     public async Task<AuthResponseDto?> LoginAsync(LoginRequestDto dto)
@@ -56,7 +58,7 @@ public class AuthService : IAuthService
     {
         var jwtSettings = _configuration.GetSection("JwtSettings");
         var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);
-        var expiresAt = DateTime.UtcNow.AddMinutes(double.Parse(jwtSettings["DurationInMinutes"]!));
+        var expiresAt = _timeProvider.GetUtcNow().UtcDateTime.AddMinutes(double.Parse(jwtSettings["DurationInMinutes"]!));
 
         var claims = new[]
         {
