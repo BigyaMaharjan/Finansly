@@ -5,6 +5,7 @@ using Finansly.Application.Services.Reports;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace Finansly.Presentation.Controllers;
 
 [ApiController]
@@ -29,16 +30,16 @@ public class ReportsController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<MonthlySummaryDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse<MonthlySummaryDto>>> GetMonthlySummary(
-        [FromQuery] int month, [FromQuery] int year, CancellationToken cancellationToken)
+        [FromQuery] MonthYearRequestDto request, CancellationToken cancellationToken)
     {
-        if (month < 1 || month > 12)
+        if (request.Month < 1 || request.Month > 12)
             return BadRequest(ApiResponse<MonthlySummaryDto>.Fail(400, "Month must be between 1 and 12."));
 
-        if (year < 2000 || year > _timeProvider.GetUtcNow().Year + 1)
+        if (request.Year < 2000 || request.Year > _timeProvider.GetUtcNow().Year + 1)
             return BadRequest(ApiResponse<MonthlySummaryDto>.Fail(400, "Year is out of a valid range."));
 
         var userId = GetCurrentUserId();
-        var result = await _reportService.GetMonthlySummaryAsync(userId, month, year, cancellationToken);
+        var result = await _reportService.GetMonthlySummaryAsync(userId, request, cancellationToken);
         return Ok(ApiResponse<MonthlySummaryDto>.Ok(result));
     }
 
@@ -49,16 +50,16 @@ public class ReportsController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<CategoryBreakdownDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse<IEnumerable<CategoryBreakdownDto>>>> GetCategoryBreakdown(
-        [FromQuery] int month, [FromQuery] int year, CancellationToken cancellationToken)
+        [FromQuery] MonthYearRequestDto request, CancellationToken cancellationToken)
     {
-        if (month < 1 || month > 12)
+        if (request.Month < 1 || request.Month > 12)
             return BadRequest(ApiResponse<IEnumerable<CategoryBreakdownDto>>.Fail(400, "Month must be between 1 and 12."));
 
-        if (year < 2000 || year > _timeProvider.GetUtcNow().Year + 1)
+        if (request.Year < 2000 || request.Year > _timeProvider.GetUtcNow().Year + 1)
             return BadRequest(ApiResponse<IEnumerable<CategoryBreakdownDto>>.Fail(400, "Year is out of a valid range."));
 
         var userId = GetCurrentUserId();
-        var result = await _reportService.GetCategoryBreakdownAsync(userId, month, year, cancellationToken);
+        var result = await _reportService.GetCategoryBreakdownAsync(userId, request, cancellationToken);
         return Ok(ApiResponse<IEnumerable<CategoryBreakdownDto>>.Ok(result));
     }
 

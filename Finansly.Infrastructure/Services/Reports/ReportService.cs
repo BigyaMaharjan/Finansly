@@ -13,11 +13,11 @@ public class ReportService : IReportService
         _repository = repository;
     }
 
-    public Task<MonthlySummaryDto> GetMonthlySummaryAsync(Guid userId, int month, int year, CancellationToken cancellationToken = default)
-        => _repository.GetMonthlySummaryAsync(userId, month, year, cancellationToken);
+    public Task<MonthlySummaryDto> GetMonthlySummaryAsync(Guid userId, MonthYearRequestDto request, CancellationToken cancellationToken = default)
+        => _repository.GetMonthlySummaryAsync(userId, request.Month, request.Year, cancellationToken);
 
-    public Task<IEnumerable<CategoryBreakdownDto>> GetCategoryBreakdownAsync(Guid userId, int month, int year, CancellationToken cancellationToken = default)
-        => _repository.GetCategoryBreakdownAsync(userId, month, year, cancellationToken);
+    public Task<IEnumerable<CategoryBreakdownDto>> GetCategoryBreakdownAsync(Guid userId, MonthYearRequestDto request, CancellationToken cancellationToken = default)
+        => _repository.GetCategoryBreakdownAsync(userId, request.Month, request.Year, cancellationToken);
 
     public Task<MonthlySummaryDto> GetBalanceAsync(Guid userId, CancellationToken cancellationToken = default)
         => _repository.GetBalanceAsync(userId, cancellationToken);
