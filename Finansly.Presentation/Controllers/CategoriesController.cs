@@ -49,6 +49,7 @@ public class CategoriesController : ControllerBase
     {
         var userId = GetCurrentUserId();
         var categories = await _categoryService.GetAllByUserAsync(userId);
+        _logger.LogDebug("Fetched categories for user {UserId}", userId);
         return Ok(ApiResponse<IEnumerable<CategoryDto>>.Ok(categories));
     }
 
@@ -68,6 +69,7 @@ public class CategoriesController : ControllerBase
             return NotFound(ApiResponse<CategoryDto>.Fail(404, $"Category with id {id} was not found."));
         }
 
+        _logger.LogDebug("Fetched category {Id}", id);
         return Ok(ApiResponse<CategoryDto>.Ok(category));
     }
 
@@ -81,6 +83,7 @@ public class CategoriesController : ControllerBase
     {
         var userId = GetCurrentUserId();
         var id = await _categoryService.CreateAsync(userId, dto);
+        _logger.LogInformation("Category {Id} created for user {UserId}", id, userId);
         return CreatedAtAction(nameof(GetById), new { id }, ApiResponse<Guid>.Ok(id));
     }
 
@@ -94,6 +97,7 @@ public class CategoriesController : ControllerBase
     public async Task<ActionResult<ApiResponse<Guid>>> Update(Guid id, [FromBody] UpdateCategoryDto dto)
     {
         var updatedId = await _categoryService.UpdateAsync(id, dto);
+        _logger.LogInformation("Category {Id} updated", updatedId);
         return Ok(ApiResponse<Guid>.Ok(updatedId, "Category updated successfully."));
     }
 
@@ -109,6 +113,7 @@ public class CategoriesController : ControllerBase
         if (!result)
             return NotFound(ApiResponse<bool>.Fail(404, $"Category with id {id} not found."));
 
+        _logger.LogInformation("Category {Id} deleted", id);
         return Ok(ApiResponse<bool>.Ok(result, "Category deleted successfully."));
     }
 
@@ -123,6 +128,8 @@ public class CategoriesController : ControllerBase
     {
         var userId = GetCurrentUserId();
         var result = await _categoryService.CreateWithTransactionsAsync(userId, dto);
+        _logger.LogInformation("Category {CategoryId} with {TransactionCount} transactions created for user {UserId}",
+            result.CategoryId, result.TransactionCount, userId);
         return CreatedAtAction(nameof(GetById), new { id = result.CategoryId },
             ApiResponse<CategoryWithTransactionsResultDto>.Created(result));
     }

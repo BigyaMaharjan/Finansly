@@ -35,6 +35,7 @@ public class AuthController : ControllerBase
             return Unauthorized(ApiResponse<AuthResponseDto>.Fail(401, "Invalid email or password."));
         }
 
+        _logger.LogInformation("User {Email} logged in successfully", dto.Email);
         return Ok(ApiResponse<AuthResponseDto>.Ok(result));
     }
 
@@ -48,6 +49,7 @@ public class AuthController : ControllerBase
     public async Task<ActionResult<ApiResponse<AuthResponseDto>>> Register([FromBody] RegisterRequestDto dto)
     {
         var result = await _authService.RegisterAsync(dto);
+        _logger.LogInformation("New user registered with email {Email}", dto.Email);
         return StatusCode(StatusCodes.Status201Created, ApiResponse<AuthResponseDto>.Created(result));
     }
 }

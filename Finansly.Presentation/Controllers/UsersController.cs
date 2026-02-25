@@ -38,6 +38,7 @@ public class UsersController : ControllerBase
             return NotFound(ApiResponse<UserDto>.Fail(404, $"User with id {userId} was not found."));
         }
 
+        _logger.LogDebug("Fetched profile for user {UserId}", userId);
         return Ok(ApiResponse<UserDto>.Ok(user));
     }
 
@@ -52,6 +53,7 @@ public class UsersController : ControllerBase
     {
         var userId = GetCurrentUserId();
         var user = await _userService.UpdateAsync(userId, dto);
+        _logger.LogInformation("User {UserId} updated their profile", userId);
         return Ok(ApiResponse<UserDto>.Ok(user, "Profile updated successfully."));
     }
 
@@ -68,6 +70,7 @@ public class UsersController : ControllerBase
         if (!result)
             return NotFound(ApiResponse<bool>.Fail(404, $"User with id {userId} not found."));
 
+        _logger.LogInformation("User {UserId} deleted their account", userId);
         return Ok(ApiResponse<bool>.Ok(result, "Account deleted successfully."));
     }
 

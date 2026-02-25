@@ -16,11 +16,13 @@ public class ReportsController : ControllerBase
 {
     private readonly IReportService _reportService;
     private readonly TimeProvider _timeProvider;
+    private readonly ILogger<ReportsController> _logger;
 
-    public ReportsController(IReportService reportService, TimeProvider timeProvider)
+    public ReportsController(IReportService reportService, TimeProvider timeProvider, ILogger<ReportsController> logger)
     {
         _reportService = reportService;
         _timeProvider = timeProvider;
+        _logger = logger;
     }
 
     /// <summary>
@@ -40,6 +42,7 @@ public class ReportsController : ControllerBase
 
         var userId = GetCurrentUserId();
         var result = await _reportService.GetMonthlySummaryAsync(userId, request, cancellationToken);
+        _logger.LogDebug("Fetched monthly summary for user {UserId}: {Month}/{Year}", userId, request.Month, request.Year);
         return Ok(ApiResponse<MonthlySummaryDto>.Ok(result));
     }
 
@@ -60,6 +63,7 @@ public class ReportsController : ControllerBase
 
         var userId = GetCurrentUserId();
         var result = await _reportService.GetCategoryBreakdownAsync(userId, request, cancellationToken);
+        _logger.LogDebug("Fetched category breakdown for user {UserId}: {Month}/{Year}", userId, request.Month, request.Year);
         return Ok(ApiResponse<IEnumerable<CategoryBreakdownDto>>.Ok(result));
     }
 
@@ -72,6 +76,7 @@ public class ReportsController : ControllerBase
     {
         var userId = GetCurrentUserId();
         var result = await _reportService.GetBalanceAsync(userId, cancellationToken);
+        _logger.LogDebug("Fetched balance for user {UserId}", userId);
         return Ok(ApiResponse<MonthlySummaryDto>.Ok(result));
     }
 

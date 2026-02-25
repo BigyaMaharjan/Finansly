@@ -37,6 +37,8 @@ public class TransactionsController : ControllerBase
     {
         var userId = GetCurrentUserId();
         var result = await _transactionService.GetPagedAsync(userId, request, cancellationToken);
+        _logger.LogDebug("Fetched {Count} transactions (total: {Total}) for user {UserId}",
+            result.Items.Count(), result.TotalCount, userId);
         return Ok(ApiResponse<PagedResultDto<TransactionDto>>.Ok(result));
     }
 
@@ -56,6 +58,7 @@ public class TransactionsController : ControllerBase
             return NotFound(ApiResponse<TransactionDto>.Fail(404, $"Transaction with id {id} was not found."));
         }
 
+        _logger.LogDebug("Fetched transaction {Id}", id);
         return Ok(ApiResponse<TransactionDto>.Ok(transaction));
     }
 
@@ -69,6 +72,7 @@ public class TransactionsController : ControllerBase
     {
         var userId = GetCurrentUserId();
         var id = await _transactionService.CreateAsync(userId, dto);
+        _logger.LogInformation("Transaction {Id} created for user {UserId}", id, userId);
         return CreatedAtAction(nameof(GetById), new { id }, ApiResponse<Guid>.Ok(id));
     }
 
@@ -83,6 +87,7 @@ public class TransactionsController : ControllerBase
     {
         var userId = GetCurrentUserId();
         var updatedId = await _transactionService.UpdateAsync(id, userId, dto);
+        _logger.LogInformation("Transaction {Id} updated by user {UserId}", updatedId, userId);
         return Ok(ApiResponse<Guid>.Ok(updatedId, "Transaction updated successfully."));
     }
 
@@ -98,6 +103,7 @@ public class TransactionsController : ControllerBase
         if (!result)
             return NotFound(ApiResponse<bool>.Fail(404, $"Transaction with id {id} not found."));
 
+        _logger.LogInformation("Transaction {Id} deleted", id);
         return Ok(ApiResponse<bool>.Ok(result, "Transaction deleted successfully."));
     }
 
@@ -118,6 +124,8 @@ public class TransactionsController : ControllerBase
 
         var userId = GetCurrentUserId();
         var total = await _transactionService.GetTotalByTypeAsync(userId, request);
+        _logger.LogDebug("Fetched {Type} summary for user {UserId}: {Month}/{Year}",
+            request.Type, userId, request.Month, request.Year);
         return Ok(ApiResponse<decimal>.Ok(total));
     }
 
