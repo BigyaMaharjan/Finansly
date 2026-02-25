@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Finansly.Application.Common.Models;
 using Finansly.Application.DTOs.Categories;
 using Finansly.Application.Services.Categories;
+using Finansly.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,6 +21,23 @@ public class CategoriesController : ControllerBase
     {
         _categoryService = categoryService;
         _logger = logger;
+    }
+
+    /// <summary>
+    /// Returns all available category types as name/value pairs for use in dropdowns.
+    /// </summary>
+    [HttpGet("types")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<CategoryTypeLookupDto>>), StatusCodes.Status200OK)]
+    public ActionResult<ApiResponse<IEnumerable<CategoryTypeLookupDto>>> GetTypes()
+    {
+        var types = Enum.GetValues<CategoryType>()
+            .Select(t => new CategoryTypeLookupDto{
+                Name = t.ToString(), 
+                Value = (int)t
+            });
+
+        return Ok(ApiResponse<IEnumerable<CategoryTypeLookupDto>>.Ok(types));
     }
 
     /// <summary>
