@@ -37,16 +37,18 @@ public class TransactionRepository : BaseRepository<Transaction>, ITransactionRe
     public async Task<PagedResultDto<TransactionDto>> GetPagedAsync(Guid userId, GetTransactionsRequestDto request, CancellationToken cancellationToken = default)
     {
         // 1. FILTER
+        var keyword = request.SearchKeyword?.Trim().ToLower();
+
         var query = _dbSet
             .Include(t => t.Category)
             .Where(t => t.UserId == userId)
-            .WhereIf(request.CategoryId.HasValue,  t => t.CategoryId == request.CategoryId!.Value)
-            .WhereIf(request.Type.HasValue,         t => t.Category.Type == request.Type!.Value)
-            .WhereIf(request.DateFrom.HasValue,     t => t.Date >= request.DateFrom!.Value)
-            .WhereIf(request.DateTo.HasValue,       t => t.Date <= request.DateTo!.Value)
-            .WhereIf(!string.IsNullOrWhiteSpace(request.SearchKeyword),
-                     t => t.Description.Contains(request.SearchKeyword!) ||
-                          t.Category.Name.Contains(request.SearchKeyword!));
+            .WhereIf(request.CategoryId.HasValue,      t => t.CategoryId == request.CategoryId!.Value)
+            .WhereIf(request.Type.HasValue,             t => t.Category.Type == request.Type!.Value)
+            .WhereIf(request.DateFrom.HasValue,         t => t.Date >= request.DateFrom!.Value)
+            .WhereIf(request.DateTo.HasValue,           t => t.Date <= request.DateTo!.Value)
+            .WhereIf(!string.IsNullOrWhiteSpace(keyword),
+                     t => t.Description.ToLower().Contains(keyword!) ||
+                          t.Category.Name.ToLower().Contains(keyword!));
 
         // 2. PROJECT
         var projected = query.Select(t => new TransactionDto
