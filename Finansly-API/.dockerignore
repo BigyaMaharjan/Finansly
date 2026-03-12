@@ -1,0 +1,11 @@
+**/bin/
+**/obj/
+**/.vs/
+**/Logs/
+**/*.user
+**/*.suo
+**/*.cache
+**/*.log
+.git/
+.gitignore
+.vscode/
