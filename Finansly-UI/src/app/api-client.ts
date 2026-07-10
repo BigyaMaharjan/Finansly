@@ -160,7 +160,9 @@ export interface IClient {
   meDELETE(): Observable<ApiResponseOfboolean>;
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class Client implements IClient {
   private http: HttpClient;
   private baseUrl: string;

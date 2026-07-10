@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Client, LoginRequestDto } from '../../../api-client';
+import { LoginRequestDto } from '../../../api-client';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
@@ -12,7 +12,6 @@ import { AuthService } from '../../../services/auth.service';
   styleUrl: './login.component.scss',
 })
 export class LoginComponent {
-  private client = inject(Client);
   private authService = inject(AuthService);
   private router = inject(Router);
 
