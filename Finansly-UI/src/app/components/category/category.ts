@@ -19,7 +19,7 @@ import {
   CreateTransactionForCategoryDto,
 } from '../../api-client';
 import { CategoryService } from '../../services/category.service';
-import { animate, createTimeline, stagger } from 'animejs';
+import { animate, stagger } from 'animejs';
 
 interface TransactionRow {
   amount: number | null;
@@ -45,6 +45,7 @@ export class Category implements OnInit, AfterViewInit {
   categories = signal<CategoryDto[]>([]);
   categoryTypes = signal<CategoryTypeLookupDto[]>([]);
   loading = signal(true);
+  error = signal('');
 
   showModal = false;
   editingCategory: CategoryDto | null = null;
@@ -68,6 +69,7 @@ export class Category implements OnInit, AfterViewInit {
 
   async loadData(): Promise<void> {
     this.loading.set(true);
+    this.error.set('');
     try {
       const [cats, types] = await Promise.all([
         this.categoryService.getAll(),
@@ -75,7 +77,8 @@ export class Category implements OnInit, AfterViewInit {
       ]);
       this.categories.set(cats);
       this.categoryTypes.set(types);
-    } catch {
+    } catch (err: any) {
+      this.error.set(err?.error?.error?.message || 'Failed to load categories. Please try again.');
     } finally {
       this.loading.set(false);
       setTimeout(() => this.animateEntrance(), 50);
@@ -218,30 +221,25 @@ export class Category implements OnInit, AfterViewInit {
 
   private animateEntrance(): void {
     const header = this.pageHeader.first?.nativeElement;
+    if (header) {
+      animate(header, {
+        translateY: [-30, 0],
+        opacity: [0, 1],
+        duration: 500,
+        ease: 'out(3)',
+      });
+    }
+
     const cards = this.categoryCards.toArray().map((c) => c.nativeElement);
-
-    if (!header || cards.length === 0) return;
-
-    const tl = createTimeline({ defaults: { ease: 'out(3)' } });
-
-    tl.add(header, {
-      translateY: [-30, 0],
-      opacity: [0, 1],
-      duration: 500,
-    });
-
     if (cards.length > 0) {
-      tl.add(
-        cards,
-        {
-          translateY: [20, 0],
-          opacity: [0, 1],
-          scale: [0.95, 1],
-          duration: 400,
-          delay: stagger(80),
-        },
-        '-=200',
-      );
+      animate(cards, {
+        translateY: [20, 0],
+        opacity: [0, 1],
+        scale: [0.95, 1],
+        duration: 400,
+        delay: stagger(80),
+        ease: 'out(3)',
+      });
     }
   }
 

@@ -77,6 +77,49 @@ $danger: #ef4444;
   }
 }
 
+// ── Error Banner ───────────────────────────────────────
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  color: #fca5a5;
+  font-size: 0.9rem;
+
+  .material-icons:first-child {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .btn-retry {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.4rem 0.8rem;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 6px;
+    color: #fca5a5;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+
+    &:hover {
+      background: rgba(239, 68, 68, 0.25);
+    }
+
+    .material-icons {
+      font-size: 0.95rem;
+    }
+  }
+}
+
 // ── Card Grid ──────────────────────────────────────────
 .card-grid {
   display: grid;

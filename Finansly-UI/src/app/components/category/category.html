@@ -9,6 +9,16 @@
     </button>
   </header>
 
+  @if (error()) {
+    <div class="error-banner">
+      <span class="material-icons">error_outline</span>
+      <span>{{ error() }}</span>
+      <button class="btn-retry" (click)="loadData()">
+        <span class="material-icons">refresh</span> Retry
+      </button>
+    </div>
+  }
+
   @if (loading()) {
     <div class="card-grid">
       @for (i of [1, 2, 3, 4, 5, 6]; track i) {
