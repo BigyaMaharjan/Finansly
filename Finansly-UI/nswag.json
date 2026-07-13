@@ -3,7 +3,7 @@
   "defaultVariables": null,
   "documentGenerator": {
     "fromDocument": {
-      "url": "http://localhost:8080/openapi/v1.json",
+      "url": "https://localhost:7007/openapi/v1.json",
       "output": null,
       "newLineBehavior": "Auto"
     }
