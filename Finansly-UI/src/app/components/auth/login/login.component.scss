@@ -7,18 +7,6 @@
   background-size: cover;
 }
 
-@keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
 .login-card {
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(2px);
@@ -78,17 +66,19 @@
     background: rgba(255, 255, 255, 0.15);
     color: #fff;
 
-    &::placeholder{color: rgba(255, 255, 255, 0.5)}
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
 
     &:focus {
       border-color: #60a5fa;
-      background: rgba(255,255,255,0.2);
+      background: rgba(255, 255, 255, 0.2);
       box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.25);
     }
   }
 }
 
-button {
+button[type="submit"] {
   width: 100%;
   padding: 0.9rem;
   background-color: #3b82f6;
@@ -150,6 +140,48 @@ button {
     &:hover {
       color: #2563eb;
       text-decoration: underline;
+    }
+  }
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(37, 99, 245, 0.3);
+  border-radius: 10px;
+  padding-right: 0.5rem;
+
+  .material-icons {
+    padding: 0 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1.2rem;
+    user-select: none;
+  }
+
+  input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    // Inherit existing input styles but remove border/background
+  }
+
+  .eye-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    display: flex;
+    color: rgba(255, 255, 255, 0.6);
+    transition: color 0.2s;
+
+    &:hover {
+      color: #fff;
+    }
+
+    .material-icons {
+      padding: 0;
+      font-size: 1.2rem;
     }
   }
 }

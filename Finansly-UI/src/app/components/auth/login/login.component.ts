@@ -37,6 +37,7 @@ export class LoginComponent implements AfterViewInit {
   password = '';
   error = '';
   loading = false;
+  showPassword = false;
 
   private get nativeElement(): HTMLElement {
     return this.elementRef.nativeElement;
@@ -183,6 +184,10 @@ export class LoginComponent implements AfterViewInit {
 
     btn.appendChild(ripple);
     setTimeout(() => ripple.remove(), 600);
+  }
+
+  togglePassword():void{
+    this.showPassword = !this.showPassword;
   }
 
   async onSubmit() {
