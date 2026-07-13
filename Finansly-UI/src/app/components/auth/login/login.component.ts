@@ -97,7 +97,7 @@ export class LoginComponent implements AfterViewInit {
           scale: [0.8, 1],
           opacity: [0, 1],
           duration: 400,
-          easing: 'easeOutBack',
+          easing: 'outBack',
         },
         '-=200',
       )
@@ -117,13 +117,13 @@ export class LoginComponent implements AfterViewInit {
 
     animate(card, {
       translateX: [
-        { value: -12, duration: 50 },
-        { value: 12, duration: 50 },
-        { value: -10, duration: 50 },
-        { value: 10, duration: 50 },
-        { value: -6, duration: 50 },
-        { value: 6, duration: 50 },
-        { value: 0, duration: 50 },
+        { to: -12, duration: 50 },
+        { to: 12, duration: 50 },
+        { to: -10, duration: 50 },
+        { to: 10, duration: 50 },
+        { to: -6, duration: 50 },
+        { to: 6, duration: 50 },
+        { to: 0, duration: 50 },
       ],
       ease: 'inOutQuad',
     });
