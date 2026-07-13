@@ -1,0 +1,178 @@
+<div class="categories-page">
+  <header class="page-header" #pageHeader>
+    <div class="header-left">
+      <h1>Categories</h1>
+      <span class="category-count">{{ categories().length }} total</span>
+    </div>
+    <button class="btn-create" (click)="openCreateModal()">
+      <span class="material-icons">add</span> New Category
+    </button>
+  </header>
+
+  @if (loading()) {
+    <div class="card-grid">
+      @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+        <div class="category-card skeleton">
+          <div class="skeleton-header">
+            <div class="skeleton-badge"></div>
+          </div>
+          <div class="skeleton-line long"></div>
+          <div class="skeleton-line short"></div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (!loading()) {
+    @if (categories().length === 0) {
+      <div class="empty-state">
+        <span class="material-icons">category</span>
+        <h3>No categories yet</h3>
+        <p>Create your first category to get started.</p>
+        <button class="btn-create" (click)="openCreateModal()">
+          <span class="material-icons">add</span> Create Category
+        </button>
+      </div>
+    } @else {
+      <div class="card-grid">
+        @for (cat of categories(); track cat.id; let idx = $index) {
+          <div
+            class="category-card"
+            [class.deleting]="confirmDeleteId === cat.id"
+            [class.type-1]="cat.type === 1"
+            [class.type-2]="cat.type === 2"
+          >
+            @if (confirmDeleteId === cat.id) {
+              <div class="delete-overlay">
+                <span class="delete-text">Delete this category?</span>
+                <div class="confirm-actions">
+                  <button class="confirm-yes" (click)="deleteCategory(cat.id!)">Yes, delete</button>
+                  <button class="confirm-no" (click)="cancelDelete()">Cancel</button>
+                </div>
+              </div>
+            }
+
+            <div class="card-content">
+              <div class="card-top">
+                <span class="type-badge" [class.badge-income]="cat.type === 1" [class.badge-expense]="cat.type === 2">
+                  {{ cat.typeName }}
+                </span>
+                <div class="card-actions">
+                  <button class="icon-btn" (click)="openEditModal(cat)" title="Edit">
+                    <span class="material-icons">edit</span>
+                  </button>
+                  <button class="icon-btn danger" (click)="confirmDelete(cat.id!)" title="Delete">
+                    <span class="material-icons">delete</span>
+                  </button>
+                </div>
+              </div>
+              <h3 class="card-name">{{ cat.name }}</h3>
+              <span class="card-date">
+                <span class="material-icons">schedule</span>
+                {{ cat.createdAt | date : 'mediumDate' }}
+              </span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>
+
+@if (showModal) {
+  <div class="modal-backdrop" (click)="closeModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()" #modalCard>
+      <div class="modal-header">
+        <h2>{{ editingCategory ? 'Edit Category' : 'New Category' }}</h2>
+        <button class="icon-btn" (click)="closeModal()">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+
+      @if (modalError) {
+        <div class="error-message">{{ modalError }}</div>
+      }
+
+      <form (ngSubmit)="submitModal()">
+        <div class="form-group">
+          <label for="modalName">Name</label>
+          <input
+            type="text"
+            id="modalName"
+            [(ngModel)]="modalName"
+            name="name"
+            required
+            placeholder="Enter category name"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="modalType">Type</label>
+          <select id="modalType" [(ngModel)]="modalType" name="type" required>
+            <option [ngValue]="null" disabled selected>Select type</option>
+            @for (type of categoryTypes(); track type.value) {
+              <option [ngValue]="type.value">{{ type.name }}</option>
+            }
+          </select>
+        </div>
+
+        @if (!editingCategory) {
+          <div class="toggle-group">
+            <label class="toggle-label">
+              <input
+                type="checkbox"
+                [checked]="includeTransactions"
+                (change)="includeTransactions = !includeTransactions"
+              />
+              <span class="toggle-switch"></span>
+              <span>Include initial transactions</span>
+            </label>
+          </div>
+
+          @if (includeTransactions) {
+            <div class="transactions-section">
+              <h4>Initial Transactions</h4>
+              @for (tx of transactions; track $index; let i = $index) {
+                <div class="transaction-row">
+                  <input
+                    type="number"
+                    [(ngModel)]="tx.amount"
+                    [name]="'amount_' + i"
+                    placeholder="Amount"
+                    class="tx-amount"
+                  />
+                  <input
+                    type="date"
+                    [(ngModel)]="tx.date"
+                    [name]="'date_' + i"
+                    class="tx-date"
+                  />
+                  <input
+                    type="text"
+                    [(ngModel)]="tx.description"
+                    [name]="'desc_' + i"
+                    placeholder="Description"
+                    class="tx-desc"
+                  />
+                  <button type="button" class="icon-btn danger tx-remove" (click)="removeTransaction(i)">
+                    <span class="material-icons">close</span>
+                  </button>
+                </div>
+              }
+              <button type="button" class="btn-add-tx" (click)="addTransaction()">
+                <span class="material-icons">add</span> Add Transaction
+              </button>
+            </div>
+          }
+        }
+
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" (click)="closeModal()">Cancel</button>
+          <button type="submit" class="btn-submit" [disabled]="modalLoading">
+            {{ modalLoading ? 'Saving...' : editingCategory ? 'Update' : 'Create' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
