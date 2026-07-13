@@ -97,7 +97,7 @@ export class LoginComponent implements AfterViewInit {
           scale: [0.8, 1],
           opacity: [0, 1],
           duration: 400,
-          easing: 'outBack',
+          ease: 'outBack',
         },
         '-=200',
       )
