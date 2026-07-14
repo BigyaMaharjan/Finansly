@@ -13,10 +13,9 @@ export class AuthService {
   private client = inject(Client);
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
-
   private tokenKey = 'auth_token';
-
   private currentUser = signal<string | null>(null);
+  private expiryKey = 'auth_expiry';
 
   isAuthenticated = computed(() => !!this.currentUser());
 
@@ -34,7 +33,7 @@ export class AuthService {
       this.client.login(dto).subscribe({
         next: (res) => {
           if (res.data?.token) {
-            this.setToken(res.data.token);
+            this.setToken(res.data.token, res.data.expiresAt);
             resolve(res);
           } else {
             reject(new Error('Invalid response'));
@@ -69,10 +68,36 @@ export class AuthService {
     return null;
   }
 
-  private setToken(token: string): void {
+  // After login, save expiry
+  private setToken(token: string, expiresAt?: Date) {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem(this.tokenKey, token);
+
+      if (expiresAt) {
+        localStorage.setItem(this.expiryKey, expiresAt.toISOString());
+      }
     }
     this.currentUser.set(token);
+  }
+
+  // Check if token is expired
+  isExpired(): boolean {
+    const expiry = localStorage.getItem(this.expiryKey);
+
+    if (!expiry) {
+      return false;
+    }
+    return new Date() >= new Date(expiry);
+  }
+
+  // Get time until expiry in millisecords
+  getTimeUntilExpiry(): number {
+    const expiry = localStorage.getItem(this.expiryKey);
+
+    if (!expiry) {
+      return Infinity;
+    }
+
+    return new Date(expiry).getTime() - Date.now();
   }
 }
