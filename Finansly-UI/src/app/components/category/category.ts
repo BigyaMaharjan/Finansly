@@ -46,16 +46,13 @@ export class Category implements OnInit, AfterViewInit {
   categoryTypes = signal<CategoryTypeLookupDto[]>([]);
   loading = signal(true);
   error = signal('');
-
   showModal = false;
   editingCategory: CategoryDto | null = null;
   modalLoading = false;
   modalError = '';
   modalName = '';
   modalType: number | null = null;
-
   confirmDeleteId: string | null = null;
-
   includeTransactions = false;
   transactions: TransactionRow[] = [];
 
@@ -64,6 +61,7 @@ export class Category implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.categoryCards.changes.subscribe(() => this.animateEntrance());
     this.animateEntrance();
   }
 
