@@ -44,51 +44,129 @@
         </button>
       </div>
     } @else {
-      <div class="card-grid">
-        @for (cat of categories(); track cat.id; let idx = $index) {
-          <div
-            #categoryCard
-            class="category-card"
-            [class.deleting]="confirmDeleteId === cat.id"
-            [class.type-1]="cat.type === 1"
-            [class.type-2]="cat.type === 2"
-          >
-            @if (confirmDeleteId === cat.id) {
-              <div class="delete-overlay">
-                <span class="delete-text">Delete this category?</span>
-                <div class="confirm-actions">
-                  <button class="confirm-yes" (click)="deleteCategory(cat.id!)">Yes, delete</button>
-                  <button class="confirm-no" (click)="cancelDelete()">Cancel</button>
+      <div class="columns-layout">
+        <section class="category-column">
+          <h2 class="column-title income-title">
+            <span class="material-icons">trending_up</span>
+            Income Categories
+            <span class="column-count">{{ incomeCategories().length }}</span>
+          </h2>
+          <div class="card-grid">
+            @for (cat of incomeCategories(); track cat.id) {
+              <div
+                #categoryCard
+                class="category-card"
+                [class.deleting]="confirmDeleteId === cat.id"
+                [class.type-1]="cat.type === 1"
+                [class.type-2]="cat.type === 2"
+              >
+                @if (confirmDeleteId === cat.id) {
+                  <div class="delete-overlay">
+                    <span class="delete-text">Delete this category?</span>
+                    <div class="confirm-actions">
+                      <button class="confirm-yes" (click)="deleteCategory(cat.id!)">
+                        Yes, delete
+                      </button>
+                      <button class="confirm-no" (click)="cancelDelete()">Cancel</button>
+                    </div>
+                  </div>
+                }
+
+                <div class="card-content">
+                  <div class="card-top">
+                    <span
+                      class="type-badge"
+                      [class.badge-income]="cat.type === 1"
+                      [class.badge-expense]="cat.type === 2"
+                    >
+                      {{ cat.typeName }}
+                    </span>
+                    <div class="card-actions">
+                      <button class="icon-btn" (click)="openEditModal(cat)" title="Edit">
+                        <span class="material-icons">edit</span>
+                      </button>
+                      <button
+                        class="icon-btn danger"
+                        (click)="confirmDelete(cat.id!)"
+                        title="Delete"
+                      >
+                        <span class="material-icons">delete</span>
+                      </button>
+                    </div>
+                  </div>
+                  <h3 class="card-name">{{ cat.name }}</h3>
+                  <span class="card-date">
+                    <span class="material-icons">schedule</span>
+                    {{ cat.createdAt | date: 'mediumDate' }}
+                  </span>
                 </div>
               </div>
             }
+          </div>
+        </section>
 
-            <div class="card-content">
-              <div class="card-top">
-                <span
-                  class="type-badge"
-                  [class.badge-income]="cat.type === 1"
-                  [class.badge-expense]="cat.type === 2"
-                >
-                  {{ cat.typeName }}
-                </span>
-                <div class="card-actions">
-                  <button class="icon-btn" (click)="openEditModal(cat)" title="Edit">
-                    <span class="material-icons">edit</span>
-                  </button>
-                  <button class="icon-btn danger" (click)="confirmDelete(cat.id!)" title="Delete">
-                    <span class="material-icons">delete</span>
-                  </button>
+        <section class="category-column">
+          <h2 class="column-title expense-title">
+            <span class="material-icons">trending_down</span>
+            Expense Categories
+            <span class="column-count">{{ expenseCategories().length }}</span>
+          </h2>
+          <div class="card-grid">
+            @for (cat of expenseCategories(); track cat.id) {
+              <div
+                #categoryCard
+                class="category-card"
+                [class.deleting]="confirmDeleteId === cat.id"
+                [class.type-1]="cat.type === 1"
+                [class.type-2]="cat.type === 2"
+              >
+                @if (confirmDeleteId === cat.id) {
+                  <div class="delete-overlay">
+                    <span class="delete-text">Delete this category?</span>
+                    <div class="confirm-actions">
+                      <button class="confirm-yes" (click)="deleteCategory(cat.id!)">
+                        Yes, delete
+                      </button>
+                      <button class="confirm-no" (click)="cancelDelete()">Cancel</button>
+                    </div>
+                  </div>
+                }
+
+                <div class="card-content">
+                  <div class="card-top">
+                    <span
+                      class="type-badge"
+                      [class.badge-income]="cat.type === 1"
+                      [class.badge-expense]="cat.type === 2"
+                    >
+                      {{ cat.typeName }}
+                    </span>
+                    <div class="card-actions">
+                      <button class="icon-btn" (click)="openEditModal(cat)" title="Edit">
+                        <span class="material-icons">edit</span>
+                      </button>
+                      <button
+                        class="icon-btn danger"
+                        (click)="confirmDelete(cat.id!)"
+                        title="Delete"
+                      >
+                        <span class="material-icons">delete</span>
+                      </button>
+                    </div>
+                  </div>
+                  <h3 class="card-name">{{ cat.name }}</h3>
+                  <span class="card-date">
+                    <span class="material-icons">schedule</span>
+                    {{ cat.createdAt | date: 'mediumDate' }}
+                  </span>
                 </div>
               </div>
-              <h3 class="card-name">{{ cat.name }}</h3>
-              <span class="card-date">
-                <span class="material-icons">schedule</span>
-                {{ cat.createdAt | date: 'mediumDate' }}
-              </span>
-            </div>
+            }
           </div>
-        }
+        </section>
+      </div>
+      <div class="card-grid">
+        @for (cat of categories(); track cat.id; let idx = $index) {}
       </div>
     }
   }

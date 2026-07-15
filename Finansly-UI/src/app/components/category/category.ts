@@ -7,6 +7,7 @@ import {
   QueryList,
   ViewChildren,
   OnInit,
+  computed,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -36,7 +37,6 @@ interface TransactionRow {
 })
 export class Category implements OnInit, AfterViewInit {
   private categoryService = inject(CategoryService);
-  private elementRef = inject(ElementRef);
 
   @ViewChildren('pageHeader') pageHeader!: QueryList<ElementRef>;
   @ViewChildren('categoryCard') categoryCards!: QueryList<ElementRef>;
@@ -64,6 +64,10 @@ export class Category implements OnInit, AfterViewInit {
     this.categoryCards.changes.subscribe(() => this.animateEntrance());
     this.animateEntrance();
   }
+
+  incomeCategories = computed(() => this.categories().filter((c) => c.type == 1));
+
+  expenseCategories = computed(() => this.categories().filter((c) => c.type == 2));
 
   async loadData(): Promise<void> {
     this.loading.set(true);
