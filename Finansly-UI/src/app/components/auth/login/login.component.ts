@@ -11,11 +11,12 @@ import { Router, RouterLink } from '@angular/router';
 import { LoginRequestDto } from '../../../api-client';
 import { AuthService } from '../../../services/auth.service';
 import { animate, createTimeline } from 'animejs';
+import { NavbarComponent } from '../../navbar/navbar.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, NavbarComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })

@@ -6,7 +6,7 @@ import { SessionTimeoutComponent } from './components/session-timeout/session-ti
   selector: 'app-root',
   imports: [RouterOutlet, SessionTimeoutComponent],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrl: './app.scss',
 })
 export class App {
   protected readonly title = signal('finansly-ui');

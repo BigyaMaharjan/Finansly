@@ -1,0 +1,23 @@
+<nav class="navbar" [class.mobile-open]="isMobileMenuOpen()">
+  <div class="nav-header">
+    <h2 class="nav-title">
+      <a routerLink="/categories">Finansly</a>
+    </h2>
+    <button class="menu-toggle" (click)="toggleMobileMenu()" aria-label="Toggle menu">☰</button>
+  </div>
+
+  <ul class="nav-links" #navLinks>
+    @for (item of navItemsData; track item.path) {
+      <li #navItem>
+        <a
+          [routerLink]="item.path"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: false }"
+          (click)="closeMobileMenu()"
+        >
+          {{ item.label }}
+        </a>
+      </li>
+    }
+  </ul>
+</nav>
