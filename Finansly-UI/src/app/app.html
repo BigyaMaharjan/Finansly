@@ -1,2 +1,7 @@
+@if (showNavbar()){
+    <app-navbar/>
+}
+<div class="app-layout" [class.has-navbar] = "showNavbar()">
 <router-outlet />
+</div>
 <app-session-timeout />

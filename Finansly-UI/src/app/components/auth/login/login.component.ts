@@ -11,12 +11,11 @@ import { Router, RouterLink } from '@angular/router';
 import { LoginRequestDto } from '../../../api-client';
 import { AuthService } from '../../../services/auth.service';
 import { animate, createTimeline } from 'animejs';
-import { NavbarComponent } from '../../navbar/navbar.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, RouterLink, NavbarComponent],
+  imports: [FormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -210,7 +209,7 @@ export class LoginComponent implements AfterViewInit {
         ease: 'inOutCubic',
       });
 
-      this.router.navigate(['/']);
+      this.router.navigate(['/categories']);
     } catch (err: any) {
       this.error = err?.error?.error?.message || 'Login failed';
       this.animateError();
