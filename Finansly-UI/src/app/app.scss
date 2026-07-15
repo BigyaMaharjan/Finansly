@@ -1,8 +1,9 @@
-.app-layout{
-    min-height: 100vh;
-    transition: margin-left 0.3s ease;
+.app-layout {
+  min-height: 100vh;
+  background-color: #0f172a;
+  transition: margin-left 0.3s ease;
 
-    &.has-navbar {
-        margin-left: 240px; //matched sidebar width
-    }
+  &.has-navbar {
+    margin-left: 208px;
+  }
 }

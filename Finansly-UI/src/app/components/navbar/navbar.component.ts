@@ -40,14 +40,6 @@ export class NavbarComponent implements AfterViewInit {
     const navbar = this.getNavbarElement();
     if (!navbar) return;
 
-    // Animate navbar slide-in
-    animate(navbar, {
-      translateX: [-300, 0],
-      opacity: [0, 1],
-      duration: 600,
-      ease: 'outCubic',
-    });
-
     // Staggered animation for nav items
     const items = this.navItems.toArray();
     if (items.length > 0) {
