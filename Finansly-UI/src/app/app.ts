@@ -1,12 +1,11 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { SessionTimeoutComponent } from './components/session-timeout/session-timeout.component';
-import { NavbarComponent } from './components/navbar/navbar.component';
 import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, SessionTimeoutComponent, NavbarComponent],
+  imports: [RouterOutlet, SessionTimeoutComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })

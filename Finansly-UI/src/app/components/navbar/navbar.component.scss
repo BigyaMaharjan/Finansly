@@ -202,3 +202,11 @@ $accent-glow: rgba(59, 130, 246, 0.35);
     }
   }
 }
+
+.app-content {
+  margin-left: 208px;
+
+  @media (max-width: 768px) {
+    margin-left: 0;
+  }
+}

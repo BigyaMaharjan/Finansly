@@ -1,9 +1,6 @@
-.app-layout {
-  min-height: 100vh;
-  background-color: #0f172a;
-  transition: margin-left 0.3s ease;
-
-  &.has-navbar {
-    margin-left: 208px;
+.app-content {
+  margin-left: 208px;
+  @media (max-width: 768px) {
+    margin-left: 0;
   }
 }
