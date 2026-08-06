@@ -24,7 +24,7 @@ public static class OpenApiExtensions
                     };
 
                 foreach (var path in document.Paths.Values)
-                    foreach (var operation in path.Operations.Values)
+                    foreach (var operation in path.Operations!.Values)
                     {
                         operation.Security ??= [];
                         operation.Security.Add(new OpenApiSecurityRequirement

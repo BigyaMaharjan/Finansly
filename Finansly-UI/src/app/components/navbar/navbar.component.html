@@ -1,0 +1,35 @@
+<nav class="navbar" [class.mobile-open]="isMobileMenuOpen()">
+  <div class="nav-header">
+    <h1 class="nav-title">
+      <a routerLink="/categories">Finansly</a>
+    </h1>
+    <button
+      class="menu-toggle"
+      (click)="toggleMobileMenu()"
+      [attr.aria-expanded]="isMobileMenuOpen()"
+      aria-label="Toggle menu"
+    >
+      <span class="material-icons">{{ isMobileMenuOpen() ? 'close' : 'menu' }}</span>
+    </button>
+  </div>
+
+  <ul class="nav-links" #navLinks>
+    @for (item of navItemsData; track item.path) {
+    <li #navItem>
+      <a
+        [routerLink]="item.path"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }"
+        (click)="closeMobileMenu()"
+      >
+        <span class="material-icons">{{ item.icon }}</span>
+        {{ item.label }}
+      </a>
+    </li>
+  }
+  </ul>
+</nav>
+
+<main class="app-content">
+  <router-outlet />
+</main>

@@ -1,0 +1,6 @@
+.app-content {
+  margin-left: 208px;
+  @media (max-width: 768px) {
+    margin-left: 0;
+  }
+}

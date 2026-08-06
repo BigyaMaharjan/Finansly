@@ -1,0 +1,88 @@
+<div class="register-container">
+  <div class="register-card" #registerCard>
+    <h2 #heading>Finansly</h2>
+
+    @if (error) {
+      <div class="error-message" #errorBlock>{{ error }}</div>
+    }
+
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-group" #nameGroup>
+        <label for="name">Name</label>
+        <div class="input-wrapper">
+          <span class="material-icons">person</span>
+          <input
+            type="text"
+            id="name"
+            [(ngModel)]="name"
+            name="name"
+            required
+            (focus)="onInputFocus($event)"
+            (blur)="onInputBlur($event)"
+          />
+        </div>
+      </div>
+
+      <div class="form-group" #emailGroup>
+        <label for="email">Email</label>
+        <div class="input-wrapper">
+          <span class="material-icons">email</span>
+          <input
+            type="email"
+            id="email"
+            [(ngModel)]="email"
+            name="email"
+            required
+            email
+            (focus)="onInputFocus($event)"
+            (blur)="onInputBlur($event)"
+          />
+        </div>
+      </div>
+
+      <div class="form-group" #passwordGroup>
+        <label for="password">Password</label>
+        <div class="input-wrapper">
+          <span class="material-icons">lock</span>
+          <input
+            #passwordInput
+            [type]="showPassword ? 'text' : 'password'"
+            id="password"
+            [(ngModel)]="password"
+            name="password"
+            required
+            minlength="6"
+            (focus)="onInputFocus($event)"
+            (blur)="onInputBlur($event)"
+          />
+          <button type="button" class="eye-toggle" (click)="togglePassword()">
+            <span class="material-icons">{{ showPassword ? 'visibility' : 'visibility_off' }}</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group" #dobGroup>
+        <label for="dateOfBirth">Date of Birth</label>
+        <div class="input-wrapper">
+          <span class="material-icons">calendar_today</span>
+          <input
+            type="date"
+            id="dateOfBirth"
+            [(ngModel)]="dateOfBirth"
+            name="dateOfBirth"
+            (focus)="onInputFocus($event)"
+            (blur)="onInputBlur($event)"
+          />
+        </div>
+      </div>
+
+      <button type="submit" [disabled]="loading" #registerBtn (click)="onRipple($event)">
+        {{ loading ? 'Registering...' : 'Register' }}
+      </button>
+    </form>
+
+    <p class="login-link" #loginLink>
+      Already have an account? <a routerLink="/auth/login">Login</a>
+    </p>
+  </div>
+</div>

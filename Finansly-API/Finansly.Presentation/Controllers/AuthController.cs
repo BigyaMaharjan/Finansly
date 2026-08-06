@@ -40,16 +40,16 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
-    /// Registers a new user and returns a JWT token.
+    /// Registers a new user and returns the user ID.
     /// </summary>
     [HttpPost("register")]
-    [ProducesResponseType(typeof(ApiResponse<AuthResponseDto>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse<Dictionary<string, string[]>>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<ApiResponse<AuthResponseDto>>> Register([FromBody] RegisterRequestDto dto)
+    public async Task<ActionResult<ApiResponse<Guid>>> Register([FromBody] RegisterRequestDto dto)
     {
         var result = await _authService.RegisterAsync(dto);
         _logger.LogInformation("New user registered with email {Email}", dto.Email);
-        return StatusCode(StatusCodes.Status201Created, ApiResponse<AuthResponseDto>.Created(result));
+        return StatusCode(StatusCodes.Status201Created, ApiResponse<Guid>.Created(result.UserId));
     }
 }
